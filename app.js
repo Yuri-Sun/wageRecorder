@@ -85,7 +85,9 @@ App({
         const record = this.globalData.records[idx]
         const startTime = data.startTime ?? record.startTime
         const endTime = data.endTime ?? record.endTime
-        const { duration, wage } = this.calcDurationAndWage(startTime, endTime)
+        const calculated = this.calcDurationAndWage(startTime, endTime)
+        const duration = data.duration ?? calculated.duration
+        const wage = data.wage ?? calculated.wage
         this.globalData.records[idx] = { ...this.globalData.records[idx], ...data, duration, wage }
       } else {
         this.globalData.records[idx] = { ...this.globalData.records[idx], ...data }

@@ -21,7 +21,7 @@ Page({
 
   onShow() {
     this.updateClock()
-    this.timer = setInterval(() => this.updateClock(), 600000)
+    this.timer = setInterval(() => this.updateClock(), 60000)
     this.refreshData()
   },
 
@@ -114,6 +114,11 @@ Page({
 
   // 上班打卡
   handlePunchIn() {
+    if (this.data.punchState === 'on') {
+      wx.showToast({ title: '已在上班中', icon: 'none' })
+      return
+    }
+
     const app = getApp()
     const now = new Date()
     const startTime = app.getTimeString(now)

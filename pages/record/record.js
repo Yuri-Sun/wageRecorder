@@ -10,7 +10,7 @@ Page({
     // 编辑弹窗
     showEditModal: false,
     editingId: '',
-    editForm: { date: '', startTime: '', endTime: '', note: '' },
+    editForm: { date: '', startTime: '', endTime: '', note: '', deductMeal: false },
     editPreview: { duration: 0, wage: 0 }
   },
 
@@ -104,7 +104,8 @@ Page({
         date: record.date,
         startTime: record.startTime,
         endTime: record.endTime,
-        note: record.note || ''
+        note: record.note || '',
+        deductMeal: false
       }
     })
     this.updateEditPreview()
@@ -134,21 +135,35 @@ Page({
     this.setData({ 'editForm.note': e.detail.value })
   },
 
+  toggleEditDeductMeal() {
+    this.setData({ 'editForm.deductMeal': !this.data.editForm.deductMeal })
+    this.updateEditPreview()
+  },
+
   updateEditPreview() {
     const app = getApp()
-    const { startTime, endTime } = this.data.editForm
-    const { duration, wage } = app.calcDurationAndWage(startTime, endTime)
+    const { startTime, endTime, deductMeal } = this.data.editForm
+    let { duration, wage } = app.calcDurationAndWage(startTime, endTime)
+    if (deductMeal) {
+      duration = Math.max(0, Math.round((duration - 0.5) * 100) / 100)
+      wage = Math.round(duration * app.getHourlyRate() * 100) / 100
+    }
     this.setData({ editPreview: { duration, wage } })
   },
 
   saveEdit() {
     const app = getApp()
-    const { date, startTime, endTime, note } = this.data.editForm
+    const { date, startTime, endTime, note, deductMeal } = this.data.editForm
     if (!startTime || !endTime) {
       wx.showToast({ title: '请填写时间', icon: 'none' })
       return
     }
-    app.updateRecord(this.data.editingId, { date, startTime, endTime, note })
+    let { duration, wage } = app.calcDurationAndWage(startTime, endTime)
+    if (deductMeal) {
+      duration = Math.max(0, Math.round((duration - 0.5) * 100) / 100)
+      wage = Math.round(duration * app.getHourlyRate() * 100) / 100
+    }
+    app.updateRecord(this.data.editingId, { date, startTime, endTime, note, duration, wage })
     this.setData({ showEditModal: false })
     this.loadRecords()
     wx.showToast({ title: '保存成功', icon: 'success' })
