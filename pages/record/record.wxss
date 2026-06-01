@@ -1,0 +1,52 @@
+/**pages/record/record.wxss**/
+page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #F5F5F5;
+}
+
+.scrollarea {
+  flex: 1;
+}
+
+.summary-bar {
+  padding: 24rpx 32rpx;
+  margin-bottom: 16rpx;
+}
+
+.record-card {
+  padding: 24rpx 32rpx;
+}
+
+.record-date {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.record-edit {
+  font-size: 24rpx;
+  color: #10AEFF;
+  padding: 4rpx 8rpx;
+}
+
+.record-delete {
+  font-size: 24rpx;
+  color: #FA5151;
+  padding: 4rpx 8rpx;
+}
+
+.record-detail {
+  font-size: 26rpx;
+  color: #666666;
+}
+
+.record-note {
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  color: #999999;
+  padding: 8rpx 16rpx;
+  background: #F9F9F9;
+  border-radius: 8rpx;
+}

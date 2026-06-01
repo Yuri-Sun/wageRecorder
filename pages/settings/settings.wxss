@@ -1,0 +1,90 @@
+/**pages/settings/settings.wxss**/
+page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #F5F5F5;
+}
+
+.scrollarea {
+  flex: 1;
+}
+
+/* 时薪设置 */
+.rate-label {
+  font-size: 28rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.rate-input-group {
+  background: #F5F5F5;
+  border-radius: 12rpx;
+  padding: 12rpx 20rpx;
+}
+
+.rate-symbol {
+  font-size: 28rpx;
+  color: #07C160;
+  font-weight: 600;
+  margin-right: 8rpx;
+}
+
+.rate-input {
+  width: 120rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+  text-align: right;
+}
+
+.rate-hint {
+  margin-top: 16rpx;
+  padding: 12rpx 16rpx;
+  background: rgba(255, 149, 0, 0.06);
+  border-radius: 8rpx;
+  font-size: 24rpx;
+}
+
+.rate-preview {
+  margin-top: 12rpx;
+  text-align: center;
+}
+
+.stat-num {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+/* 导出 */
+.export-options {
+  display: flex;
+  gap: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.export-btn {
+  flex: 1;
+  height: 88rpx;
+  font-size: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+}
+
+.export-icon {
+  font-size: 32rpx;
+}
+
+.export-tip {
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* 版本 */
+.version-info {
+  text-align: center;
+  padding: 48rpx 0;
+}
