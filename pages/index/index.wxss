@@ -1,0 +1,214 @@
+/**pages/index/index.wxss**/
+page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #F5F5F5;
+}
+
+.scrollarea {
+  flex: 1;
+}
+
+.clock-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48rpx 32rpx;
+  background: linear-gradient(135deg, #07C160, #06AD56);
+  color: #FFFFFF;
+  border-radius: 20rpx;
+  margin-bottom: 24rpx;
+}
+
+.date-display {
+  font-size: 28rpx;
+  opacity: 0.85;
+  margin-bottom: 12rpx;
+}
+
+.time-display {
+  font-size: 88rpx;
+  font-weight: 700;
+  letter-spacing: 4rpx;
+  margin-bottom: 8rpx;
+}
+
+.weekday {
+  font-size: 28rpx;
+  opacity: 0.8;
+}
+
+/* 统计卡片 */
+.stats-card {
+  padding: 32rpx;
+}
+
+.stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999999;
+  margin-bottom: 12rpx;
+}
+
+.stat-value {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: #333333;
+}
+
+.stat-value-small {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.stat-unit {
+  font-size: 26rpx;
+  font-weight: 400;
+  color: #999999;
+}
+
+.stat-divider {
+  width: 2rpx;
+  height: 60rpx;
+  background: #F0F0F0;
+}
+
+/* 打卡区域 */
+.punch-area {
+  padding: 40rpx 32rpx;
+}
+
+.punch-status {
+  text-align: center;
+  margin-bottom: 32rpx;
+}
+
+.punch-hint {
+  font-size: 30rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+/* 实时工作时长 */
+.live-duration {
+  margin-top: 24rpx;
+  padding: 24rpx 32rpx;
+  background: linear-gradient(135deg, rgba(7, 193, 96, 0.08), rgba(7, 193, 96, 0.04));
+  border-radius: 16rpx;
+  border: 2rpx solid rgba(7, 193, 96, 0.15);
+}
+
+.live-duration-label {
+  font-size: 24rpx;
+  color: #999999;
+  margin-bottom: 8rpx;
+}
+
+.live-duration-value {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  margin-bottom: 6rpx;
+}
+
+.live-duration-num {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #FF9500;
+  letter-spacing: 2rpx;
+}
+
+.live-duration-unit {
+  font-size: 26rpx;
+  color: #FF9500;
+  margin-left: 6rpx;
+}
+
+.live-wage {
+  text-align: center;
+  font-size: 26rpx;
+  color: #07C160;
+  font-weight: 500;
+}
+
+/* 吃饭扣除勾选 */
+.meal-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20rpx;
+  gap: 12rpx;
+}
+
+.meal-checkbox {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 8rpx;
+  border: 3rpx solid #CCCCCC;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: #FFFFFF;
+}
+
+.meal-checkbox.checked {
+  background: #FF9500;
+  border-color: #FF9500;
+}
+
+.meal-label {
+  font-size: 26rpx;
+  color: #666666;
+}
+
+.punch-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.punch-btn {
+  width: 360rpx;
+  height: 96rpx;
+  font-size: 34rpx;
+  border-radius: 48rpx;
+}
+
+.punch-btn-out {
+  background: linear-gradient(135deg, #FF9500, #FF7A00);
+}
+
+/* 最近记录 */
+.recent-item {
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #F5F5F5;
+}
+
+.recent-item:last-child {
+  border-bottom: none;
+}
+
+.recent-date {
+  font-size: 26rpx;
+  color: #666666;
+  margin-right: 16rpx;
+}
+
+.recent-time {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.recent-wage {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #07C160;
+}

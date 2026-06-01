@@ -1,0 +1,105 @@
+<!--pages/record/record.wxml-->
+<navigation-bar title="打卡记录" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+
+<!-- 筛选栏 -->
+<view class="filter-bar">
+  <picker mode="date" value="{{filterDate}}" bindchange="onDateChange">
+    <view class="filter-item {{filterType === 'day' ? 'active' : ''}}">
+      {{filterType === 'day' ? filterDate : '按日期筛选'}}
+    </view>
+  </picker>
+  <view class="filter-item {{filterType === 'all' ? 'active' : ''}}" bindtap="setFilter" data-type="all">全部</view>
+  <view class="filter-item {{filterType === 'week' ? 'active' : ''}}" bindtap="setFilter" data-type="week">本周</view>
+  <view class="filter-item {{filterType === 'month' ? 'active' : ''}}" bindtap="setFilter" data-type="month">本月</view>
+</view>
+
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="page-container">
+
+    <!-- 统计摘要 -->
+    <view class="card summary-bar flex-between" wx:if="{{filteredRecords.length > 0}}">
+      <view class="flex-col" style="align-items: center;">
+        <text class="text-small text-gray">记录数</text>
+        <text class="value-medium">{{summary.count}}</text>
+      </view>
+      <view class="flex-col" style="align-items: center;">
+        <text class="text-small text-gray">总工时</text>
+        <text class="value-medium">{{summary.totalDuration}}h</text>
+      </view>
+      <view class="flex-col" style="align-items: center;">
+        <text class="text-small text-gray">总工资</text>
+        <text class="value-medium text-green">${{summary.totalWage}}</text>
+      </view>
+    </view>
+
+    <!-- 记录列表 -->
+    <block wx:if="{{filteredRecords.length > 0}}">
+      <view class="record-card card" wx:for="{{filteredRecords}}" wx:key="id">
+        <view class="flex-between" style="margin-bottom: 16rpx;">
+          <view class="flex-row" style="gap: 12rpx;">
+            <text class="record-date">{{item.date}}</text>
+            <view class="tag tag-blue">{{item.startTime}} - {{item.endTime}}</view>
+          </view>
+          <view class="flex-row" style="gap: 16rpx;">
+            <text class="record-edit" bindtap="editRecord" data-id="{{item.id}}">编辑</text>
+            <text class="record-delete" bindtap="deleteRecord" data-id="{{item.id}}">删除</text>
+          </view>
+        </view>
+        <view class="flex-between">
+          <view class="flex-row" style="gap: 32rpx;">
+            <text class="record-detail">工时 <text class="text-green" style="font-weight: 600;">{{item.duration}}h</text></text>
+            <text class="record-detail">工资 <text class="text-orange" style="font-weight: 600;">${{item.wage}}</text></text>
+          </view>
+        </view>
+        <view class="record-note" wx:if="{{item.note}}">📝 {{item.note}}</view>
+      </view>
+    </block>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:else>
+      <view class="empty-icon">📋</view>
+      <view class="empty-text">暂无打卡记录</view>
+      <view class="text-small text-gray" style="margin-top: 8rpx;">去首页开始打卡吧</view>
+    </view>
+
+  </view>
+</scroll-view>
+
+<!-- 编辑弹窗 -->
+<view class="modal-mask" wx:if="{{showEditModal}}" catchtap="closeEditModal">
+  <view class="modal-content" catchtap="stopPropagation">
+    <view class="modal-title">编辑打卡记录</view>
+    <view class="flex-row" style="gap: 16rpx; margin-bottom: 16rpx;">
+      <view class="flex-col flex-1">
+        <text class="text-small text-gray" style="margin-bottom: 8rpx;">上班时间</text>
+        <picker mode="time" value="{{editForm.startTime}}" bindchange="onStartTimeChange">
+          <view class="input-field flex-row">{{editForm.startTime}}</view>
+        </picker>
+      </view>
+      <view class="flex-col flex-1">
+        <text class="text-small text-gray" style="margin-bottom: 8rpx;">下班时间</text>
+        <picker mode="time" value="{{editForm.endTime}}" bindchange="onEndTimeChange">
+          <view class="input-field flex-row">{{editForm.endTime}}</view>
+        </picker>
+      </view>
+    </view>
+    <view class="flex-col" style="margin-bottom: 16rpx;">
+      <text class="text-small text-gray" style="margin-bottom: 8rpx;">日期</text>
+      <picker mode="date" value="{{editForm.date}}" bindchange="onEditDateChange">
+        <view class="input-field flex-row">{{editForm.date}}</view>
+      </picker>
+    </view>
+    <view class="flex-col" style="margin-bottom: 16rpx;">
+      <text class="text-small text-gray" style="margin-bottom: 8rpx;">备注</text>
+      <input class="input-field" value="{{editForm.note}}" placeholder="添加备注..." bindinput="onNoteInput" />
+    </view>
+    <view class="flex-row" style="justify-content: flex-end; gap: 8rpx;">
+      <text class="text-small text-gray">工时: {{editPreview.duration}}h</text>
+      <text class="text-small text-green">工资: ${{editPreview.wage}}</text>
+    </view>
+    <view class="modal-actions">
+      <button class="btn-outline" bindtap="closeEditModal">取消</button>
+      <button class="btn-primary" bindtap="saveEdit">保存</button>
+    </view>
+  </view>
+</view>

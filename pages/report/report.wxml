@@ -1,0 +1,77 @@
+<!--pages/report/report.wxml-->
+<navigation-bar title="统计报表" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+
+<!-- 时间维度切换 -->
+<view class="filter-bar">
+  <view class="filter-item {{viewMode === 'day' ? 'active' : ''}}" bindtap="switchMode" data-mode="day">按天</view>
+  <view class="filter-item {{viewMode === 'week' ? 'active' : ''}}" bindtap="switchMode" data-mode="week">按周</view>
+  <view class="filter-item {{viewMode === 'month' ? 'active' : ''}}" bindtap="switchMode" data-mode="month">按月</view>
+</view>
+
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="page-container">
+
+    <!-- 总览卡片 -->
+    <view class="card overview-card">
+      <view class="overview-title">{{periodLabel}} 工资总览</view>
+      <view class="overview-amount">${{overview.totalWage}}</view>
+      <view class="flex-row" style="gap: 48rpx; margin-top: 24rpx;">
+        <view>
+          <text class="text-small text-gray">总工时</text>
+          <text class="overview-sub">{{overview.totalDuration}} 小时</text>
+        </view>
+        <view>
+          <text class="text-small text-gray">记录数</text>
+          <text class="overview-sub">{{overview.totalCount}} 条</text>
+        </view>
+        <view>
+          <text class="text-small text-gray">日均工资</text>
+          <text class="overview-sub">${{overview.avgWage}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 图表区域 - 简易柱状图 -->
+    <view class="card chart-card chart-{{viewMode}}" wx:if="{{stats.length > 0}}">
+      <view class="card-title">工资分布</view>
+      <scroll-view scroll-x class="chart-scroll" wx:if="{{viewMode === 'day' && stats.length <= 31}}">
+        <view class="chart-container">
+          <view class="bar-group" wx:for="{{stats}}" wx:key="*this" style="height: {{chartHeight}}rpx;">
+            <view class="bar" style="height: {{item.barHeight}}rpx; background: {{item.wage >= overview.avgWage * 1.2 ? '#07C160' : '#91E0B6'}};"></view>
+            <text class="bar-label">{{item.label}}</text>
+            <text class="bar-value">${{item.wage}}</text>
+          </view>
+        </view>
+      </scroll-view>
+      <view class="chart-scroll" wx:else>
+        <view class="chart-container">
+          <view class="bar-group" wx:for="{{stats}}" wx:key="*this" style="height: {{chartHeight}}rpx;">
+            <view class="bar" style="height: {{item.barHeight}}rpx; background: {{item.wage >= overview.avgWage * 1.2 ? '#07C160' : '#91E0B6'}};"></view>
+            <text class="bar-label">{{item.label}}</text>
+            <text class="bar-value">${{item.wage}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 详细列表 -->
+    <view class="card" wx:if="{{stats.length > 0}}">
+      <view class="card-title">详细数据</view>
+      <view class="stat-list-item flex-between" wx:for="{{stats}}" wx:key="*this">
+        <view>
+          <text class="stat-list-label">{{item.label}}</text>
+          <text class="stat-list-detail text-small text-gray">{{item.duration}}h · {{item.count}}条记录</text>
+        </view>
+        <text class="stat-list-wage">${{item.wage}}</text>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{stats.length === 0}}">
+      <view class="empty-icon">📊</view>
+      <view class="empty-text">暂无统计数据</view>
+      <view class="text-small text-gray" style="margin-top: 8rpx;">去首页开始打卡吧</view>
+    </view>
+
+  </view>
+</scroll-view>
