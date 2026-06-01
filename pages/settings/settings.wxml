@@ -13,7 +13,7 @@
         </view>
         <view class="flex-row rate-input-group">
           <text class="rate-symbol">$</text>
-          <input class="rate-input" type="digit" value="{{hourlyRate}}" bindinput="onRateInput" bindblur="onRateBlur" />
+          <input class="rate-input" type="digit" value="{{rateInputValue}}" bindinput="onRateInput" bindblur="onRateBlur" />
         </view>
       </view>
       <view class="rate-hint" wx:if="{{rateChanged}}">
