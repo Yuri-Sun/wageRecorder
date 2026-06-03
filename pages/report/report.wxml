@@ -14,7 +14,7 @@
     <!-- 总览卡片 -->
     <view class="card overview-card">
       <view class="overview-title">{{periodLabel}} 工资总览</view>
-      <view class="overview-amount">${{overview.totalWage}}</view>
+      <view class="overview-amount">A${{overview.totalWage}}</view>
       <view class="flex-row" style="gap: 48rpx; margin-top: 24rpx;">
         <view>
           <text class="text-small text-gray">总工时</text>
@@ -26,7 +26,7 @@
         </view>
         <view>
           <text class="text-small text-gray">日均工资</text>
-          <text class="overview-sub">${{overview.avgWage}}</text>
+          <text class="overview-sub">A${{overview.avgWage}}</text>
         </view>
       </view>
     </view>
@@ -39,7 +39,7 @@
           <view class="bar-group" wx:for="{{stats}}" wx:key="*this" style="height: {{chartHeight}}rpx;">
             <view class="bar" style="height: {{item.barHeight}}rpx; background: {{item.wage >= overview.avgWage * 1.2 ? '#07C160' : '#91E0B6'}};"></view>
             <text class="bar-label">{{item.label}}</text>
-            <text class="bar-value">${{item.wage}}</text>
+            <text class="bar-value">A${{item.wage}}</text>
           </view>
         </view>
       </scroll-view>
@@ -48,7 +48,7 @@
           <view class="bar-group" wx:for="{{stats}}" wx:key="*this" style="height: {{chartHeight}}rpx;">
             <view class="bar" style="height: {{item.barHeight}}rpx; background: {{item.wage >= overview.avgWage * 1.2 ? '#07C160' : '#91E0B6'}};"></view>
             <text class="bar-label">{{item.label}}</text>
-            <text class="bar-value">${{item.wage}}</text>
+            <text class="bar-value">A${{item.wage}}</text>
           </view>
         </view>
       </view>
@@ -62,7 +62,7 @@
           <text class="stat-list-label">{{item.label}}</text>
           <text class="stat-list-detail text-small text-gray">{{item.duration}}h · {{item.count}}条记录</text>
         </view>
-        <text class="stat-list-wage">${{item.wage}}</text>
+        <text class="stat-list-wage">A${{item.wage}}</text>
       </view>
     </view>
 

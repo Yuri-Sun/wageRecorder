@@ -1,7 +1,6 @@
 /*
- * Eslint config file
- * Documentation: https://eslint.org/docs/user-guide/configuring/
- * Install the Eslint extension before using this feature.
+ * ESLint 配置
+ * 文档: https://eslint.org/docs/latest/use/configure/
  */
 module.exports = {
   env: {
@@ -9,12 +8,9 @@ module.exports = {
     browser: true,
     node: true,
   },
-  ecmaFeatures: {
-    modules: true,
-  },
   parserOptions: {
-    ecmaVersion: 2018,
-    sourceType: 'module',
+    ecmaVersion: 2020,
+    sourceType: 'script',
   },
   globals: {
     wx: true,
@@ -26,6 +22,5 @@ module.exports = {
     requirePlugin: true,
     requireMiniProgram: true,
   },
-  // extends: 'eslint:recommended',
   rules: {},
 }

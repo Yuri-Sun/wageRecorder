@@ -28,7 +28,7 @@
       </view>
       <view class="flex-col" style="align-items: center;">
         <text class="text-small text-gray">总工资</text>
-        <text class="value-medium text-green">${{summary.totalWage}}</text>
+        <text class="value-medium text-green">A${{summary.totalWage}}</text>
       </view>
     </view>
 
@@ -48,7 +48,7 @@
         <view class="flex-between">
           <view class="flex-row" style="gap: 32rpx;">
             <text class="record-detail">工时 <text class="text-green" style="font-weight: 600;">{{item.duration}}h</text></text>
-            <text class="record-detail">工资 <text class="text-orange" style="font-weight: 600;">${{item.wage}}</text></text>
+            <text class="record-detail">工资 <text class="text-orange" style="font-weight: 600;">A${{item.wage}}</text></text>
           </view>
         </view>
         <view class="record-note" wx:if="{{item.note}}">📝 {{item.note}}</view>
@@ -101,7 +101,7 @@
     </view>
     <view class="flex-row" style="justify-content: flex-end; gap: 8rpx; margin-top: 16rpx;">
       <text class="text-small text-gray">工时: {{editPreview.duration}}h</text>
-      <text class="text-small text-green">工资: ${{editPreview.wage}}</text>
+      <text class="text-small text-green">工资: A${{editPreview.wage}}</text>
     </view>
     <view class="modal-actions">
       <button class="btn-outline" bindtap="closeEditModal">取消</button>

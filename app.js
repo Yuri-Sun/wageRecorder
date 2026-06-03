@@ -1,8 +1,10 @@
 // app.js
+const wageUtil = require('./utils/wage.js')
+
 App({
   globalData: {
     hourlyRate: 25, // 默认时薪
-    records: [] // 打卡记录 [{id, date, startTime, endTime, duration, wage, note}]
+    records: [] // 打卡记录 [{id, date, startTime, endTime, duration, wage, note, mealDeducted?}]
   },
 
   onLaunch() {
@@ -42,27 +44,40 @@ App({
 
   // 计算单条记录的工时（小时）和工资
   calcDurationAndWage(startTime, endTime) {
-    const [sh, sm] = startTime.split(':').map(Number)
-    const [eh, em] = endTime.split(':').map(Number)
-    let duration = (eh * 60 + em - sh * 60 - sm) / 60
-    if (duration < 0) duration += 24
-    duration = Math.round(duration * 100) / 100
-    const wage = Math.round(duration * this.globalData.hourlyRate * 100) / 100
-    return { duration, wage }
+    return wageUtil.calcDurationAndWage(startTime, endTime, this.globalData.hourlyRate)
   },
 
-  // 重新计算所有记录工资
+  // 扣除午饭时间（统一入口）
+  applyMealDeduction(duration, wage) {
+    return wageUtil.applyMealDeduction(duration, wage, this.globalData.hourlyRate)
+  },
+
+  // 按起止时间计算，可选扣午饭
+  calcDurationAndWageWithMeal(startTime, endTime, deductMeal) {
+    return wageUtil.calcDurationAndWageWithMeal(
+      startTime,
+      endTime,
+      this.globalData.hourlyRate,
+      deductMeal
+    )
+  },
+
+  // 重新计算所有记录工资（保留已标记的扣饭记录）
   recalcAllWages() {
     this.globalData.records = this.globalData.records.map(r => {
-      const { duration, wage } = this.calcDurationAndWage(r.startTime, r.endTime)
+      let { duration, wage } = this.calcDurationAndWage(r.startTime, r.endTime)
+      if (r.mealDeducted) {
+        ;({ duration, wage } = this.applyMealDeduction(duration, wage))
+      }
       return { ...r, duration, wage }
     })
     this.saveRecords()
   },
 
   // 添加上下班打卡
-  addPunch(date, startTime, endTime, note = '') {
-    const { duration, wage } = this.calcDurationAndWage(startTime, endTime)
+  addPunch(date, startTime, endTime, note = '', options = {}) {
+    const deductMeal = !!options.deductMeal
+    const { duration, wage } = this.calcDurationAndWageWithMeal(startTime, endTime, deductMeal)
     const record = {
       id: Date.now().toString(),
       date,
@@ -70,7 +85,8 @@ App({
       endTime,
       duration,
       wage,
-      note
+      note,
+      mealDeducted: deductMeal,
     }
     this.globalData.records.unshift(record)
     this.saveRecords()
@@ -85,10 +101,17 @@ App({
         const record = this.globalData.records[idx]
         const startTime = data.startTime ?? record.startTime
         const endTime = data.endTime ?? record.endTime
-        const calculated = this.calcDurationAndWage(startTime, endTime)
+        const mealDeducted = data.mealDeducted ?? record.mealDeducted
+        const calculated = this.calcDurationAndWageWithMeal(startTime, endTime, mealDeducted)
         const duration = data.duration ?? calculated.duration
         const wage = data.wage ?? calculated.wage
-        this.globalData.records[idx] = { ...this.globalData.records[idx], ...data, duration, wage }
+        this.globalData.records[idx] = {
+          ...this.globalData.records[idx],
+          ...data,
+          duration,
+          wage,
+          mealDeducted,
+        }
       } else {
         this.globalData.records[idx] = { ...this.globalData.records[idx], ...data }
       }
@@ -112,29 +135,24 @@ App({
       totalDuration += r.duration
       totalWage += r.wage
     })
-    const duration = Math.round(totalDuration * 100) / 100
-    const wage = Math.round(totalWage * 100) / 100
+    const duration = wageUtil.round2(totalDuration)
+    const wage = wageUtil.round2(totalWage)
     return {
       duration,
       wage,
       totalDuration: duration,
-      totalWage: wage
+      totalWage: wage,
     }
   },
 
   // 获取日期字符串 yyyy-MM-dd
   getDateString(date = new Date()) {
-    const y = date.getFullYear()
-    const m = (date.getMonth() + 1).toString().padStart(2, '0')
-    const d = date.getDate().toString().padStart(2, '0')
-    return `${y}-${m}-${d}`
+    return wageUtil.getDateString(date)
   },
 
   // 获取当前时间字符串 HH:mm
   getTimeString(date = new Date()) {
-    const h = date.getHours().toString().padStart(2, '0')
-    const m = date.getMinutes().toString().padStart(2, '0')
-    return `${h}:${m}`
+    return wageUtil.getTimeString(date)
   },
 
   // 按天统计（指定日期范围）
@@ -151,8 +169,8 @@ App({
     return Object.entries(stats).map(([date, data]) => ({
       date,
       ...data,
-      duration: Math.round(data.duration * 100) / 100,
-      wage: Math.round(data.wage * 100) / 100
+      duration: wageUtil.round2(data.duration),
+      wage: wageUtil.round2(data.wage),
     })).sort((a, b) => b.date.localeCompare(a.date))
   },
 
@@ -171,9 +189,9 @@ App({
     })
     return Object.entries(weeks).map(([week, data]) => ({
       week: `${week} ~ ${this.getWeekEnd(new Date(week))}`,
-      duration: Math.round(data.duration * 100) / 100,
-      wage: Math.round(data.wage * 100) / 100,
-      count: data.count
+      duration: wageUtil.round2(data.duration),
+      wage: wageUtil.round2(data.wage),
+      count: data.count,
     })).sort((a, b) => b.week.localeCompare(a.week))
   },
 
@@ -191,26 +209,20 @@ App({
     })
     return Object.entries(months).map(([month, data]) => ({
       month,
-      duration: Math.round(data.duration * 100) / 100,
-      wage: Math.round(data.wage * 100) / 100,
-      count: data.count
+      duration: wageUtil.round2(data.duration),
+      wage: wageUtil.round2(data.wage),
+      count: data.count,
     })).sort((a, b) => b.month.localeCompare(a.month))
   },
 
   // 获取周一日期
   getWeekStart(date) {
-    const d = new Date(date)
-    const day = d.getDay()
-    const diff = day === 0 ? -6 : 1 - day
-    d.setDate(d.getDate() + diff)
-    return this.getDateString(d)
+    return wageUtil.getWeekStart(date, d => this.getDateString(d))
   },
 
   // 获取周日日期
   getWeekEnd(date) {
-    const d = new Date(date)
-    d.setDate(d.getDate() + 6)
-    return this.getDateString(d)
+    return wageUtil.getWeekEnd(date, d => this.getDateString(d))
   },
 
   // 导出为 CSV
@@ -231,7 +243,7 @@ App({
         escapeCsv(r.endTime),
         escapeCsv(r.duration),
         escapeCsv(r.wage),
-        escapeCsv(r.note || '')
+        escapeCsv(r.note || ''),
       ].join(',') + '\n'
     })
     return csv
@@ -241,15 +253,15 @@ App({
   exportTXT(records) {
     let txt = '考勤与薪资记录\n'
     txt += '='.repeat(40) + '\n'
-    txt += `时薪: $${this.globalData.hourlyRate}/小时\n`
+    txt += `时薪: A$${this.globalData.hourlyRate}/小时\n`
     txt += '='.repeat(40) + '\n\n'
     records.forEach(r => {
       txt += `日期: ${r.date}\n`
       txt += `上班: ${r.startTime}  下班: ${r.endTime}\n`
-      txt += `工时: ${r.duration} 小时  工资: $${r.wage}\n`
+      txt += `工时: ${r.duration} 小时  工资: A$${r.wage}\n`
       if (r.note) txt += `备注: ${r.note}\n`
       txt += '-'.repeat(30) + '\n'
     })
     return txt
-  }
+  },
 })

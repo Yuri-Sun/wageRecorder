@@ -101,7 +101,8 @@ Page({
           filePath,
           fileName,
           success: () => {
-            wx.showToast({ title: `已导出 ${ext.toUpperCase()}`, icon: 'success' })
+            const formatLabel = ext === 'csv' ? '表格' : '文本'
+            wx.showToast({ title: `已导出${formatLabel}`, icon: 'success' })
           },
           fail: () => {
             // 如果分享失败，尝试复制到剪贴板

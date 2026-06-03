@@ -52,8 +52,9 @@ Page({
 
     this.setData(updateData)
 
-    // 检查跨天：如果上次打卡是上班状态且日期变了，自动重置
+    // 检查跨天：重置未完成打卡并清除过期的 pendingPunch
     if (this.data.punchState === 'on' && this.data._punchDate && this.data._punchDate !== dateText) {
+      wx.removeStorageSync('pendingPunch')
       this.setData({ punchState: 'off', startTime: '', liveDuration: '0.00', liveWage: '0.00' })
     }
   },
@@ -83,9 +84,13 @@ Page({
 
     // 检查是否有未完成的打卡（仅上班没下班的情况）
     const pendingPunch = wx.getStorageSync('pendingPunch')
-    if (pendingPunch && pendingPunch.date === today) {
-      punchState = 'on'
-      startTime = pendingPunch.startTime
+    if (pendingPunch) {
+      if (pendingPunch.date === today) {
+        punchState = 'on'
+        startTime = pendingPunch.startTime
+      } else {
+        wx.removeStorageSync('pendingPunch')
+      }
     }
 
     // 上班中：立即计算实时工作时长
@@ -148,26 +153,19 @@ Page({
       return
     }
 
-    const record = app.addPunch(pendingPunch.date, pendingPunch.startTime, endTime)
+    const record = app.addPunch(pendingPunch.date, pendingPunch.startTime, endTime, '', {
+      deductMeal: this.data.deductMeal,
+    })
 
-    // 扣除吃饭时间
-    if (this.data.deductMeal) {
-      const adjustedDuration = Math.max(0, record.duration - 0.5)
-      record.duration = Math.round(adjustedDuration * 100) / 100
-      record.wage = Math.round(adjustedDuration * app.getHourlyRate() * 100) / 100
-      app.updateRecord(record.id, { duration: record.duration, wage: record.wage })
-    }
-
-    // 清除待完成状态
     wx.removeStorageSync('pendingPunch')
 
     this.setData({ punchState: 'done', deductMeal: false })
     this.refreshData()
 
     wx.showToast({
-      title: `Punch out success: ${record.duration}h`,
+      title: `下班成功，工时 ${record.duration} 小时`,
       icon: 'success',
-      duration: 2000
+      duration: 2000,
     })
   },
 
