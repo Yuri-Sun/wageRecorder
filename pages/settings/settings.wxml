@@ -50,6 +50,38 @@
 
     <view class="ui-section">
       <text class="ui-section-title">导出</text>
+      <view class="ui-group settings-export-range">
+        <view class="settings-range-row">
+          <text class="settings-range-label">开始日期</text>
+          <picker mode="date" value="{{exportStartDate}}" end="{{exportEndDate}}" bindchange="onExportStartChange">
+            <view class="settings-range-picker">
+              <text class="settings-range-value text-nowrap">{{exportStartDate}}</text>
+              <text class="ui-cell__chevron">›</text>
+            </view>
+          </picker>
+        </view>
+        <view class="settings-range-row">
+          <text class="settings-range-label">结束日期</text>
+          <picker
+            mode="date"
+            value="{{exportEndDate}}"
+            start="{{exportStartDate}}"
+            end="{{maxDate}}"
+            bindchange="onExportEndChange"
+          >
+            <view class="settings-range-picker">
+              <text class="settings-range-value text-nowrap">{{exportEndDate}}</text>
+              <text class="ui-cell__chevron">›</text>
+            </view>
+          </picker>
+        </view>
+        <view class="settings-range-presets">
+          <text class="settings-preset" bindtap="setExportPreset" data-preset="week">本周</text>
+          <text class="settings-preset" bindtap="setExportPreset" data-preset="month">本月</text>
+          <text class="settings-preset" bindtap="setExportPreset" data-preset="all">全部</text>
+        </view>
+        <text class="settings-range-count">将导出 {{exportRecordCount}} 条记录</text>
+      </view>
       <view class="ui-group">
         <view class="ui-cell settings-cell--link" bindtap="exportCSV">
           <view class="settings-cell__icon settings-cell__icon--green">表</view>
@@ -68,7 +100,7 @@
           <text class="ui-cell__chevron">›</text>
         </view>
       </view>
-      <text class="ui-section-footnote">导出全部本地记录，可分享到微信聊天</text>
+      <text class="ui-section-footnote">按上方时间范围导出，可分享到微信聊天</text>
     </view>
 
     <view class="ui-section">

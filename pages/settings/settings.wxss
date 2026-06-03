@@ -126,3 +126,55 @@ page {
   font-size: 24rpx;
   color: #b2b2b2;
 }
+
+
+.settings-export-range {
+  padding: 8rpx 32rpx 24rpx;
+}
+
+.settings-range-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.settings-range-label {
+  font-size: 28rpx;
+  color: #666;
+  flex-shrink: 0;
+}
+
+.settings-range-picker {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.settings-range-value {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #07c160;
+}
+
+.settings-range-presets {
+  display: flex;
+  gap: 24rpx;
+  padding: 16rpx 0 8rpx;
+}
+
+.settings-preset {
+  font-size: 26rpx;
+  color: #576b95;
+  padding: 8rpx 20rpx;
+  background: #f7f7f7;
+  border-radius: 8rpx;
+}
+
+.settings-range-count {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  padding-top: 8rpx;
+}
