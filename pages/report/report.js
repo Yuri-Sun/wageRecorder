@@ -2,6 +2,13 @@
 const app = getApp()
 const { getWeekRangeForAnchor, formatWeekRangeLabel } = require('../../utils/report-range.js')
 
+/** 柱状图绘图区高度（仅柱体+柱顶金额） */
+const CHART_PLOT_HEIGHT = 200
+/** 柱体上方预留金额文字高度 */
+const CHART_VALUE_RESERVE = 36
+/** 柱体下方日期标签区域 */
+const CHART_LABEL_AREA = 48
+
 Page({
   data: {
     viewMode: 'month',
@@ -9,7 +16,8 @@ Page({
     maxDate: '',
     weekRangeLabel: '',
     periodLabel: '本月',
-    chartHeight: 240,
+    chartPlotHeight: CHART_PLOT_HEIGHT,
+    chartScrollHeight: CHART_PLOT_HEIGHT + CHART_LABEL_AREA,
     overview: { totalWage: 0, totalDuration: 0, totalCount: 0, avgWage: 0 },
     stats: [],
   },
@@ -60,13 +68,17 @@ Page({
 
   formatStatsWithChart(stats, labelFn) {
     const maxWage = Math.max(...stats.map(s => s.wage), 0.01)
-    const barMax = this.data.chartHeight - 80
+    const barMax = CHART_PLOT_HEIGHT - CHART_VALUE_RESERVE
 
-    return stats.map(s => ({
-      ...s,
-      label: labelFn(s),
-      barHeight: Math.max(4, Math.round((s.wage / maxWage) * barMax)),
-    }))
+    return stats.map(s => {
+      const label = labelFn(s)
+      return {
+        ...s,
+        keyId: s.date || s.month || label,
+        label,
+        barHeight: Math.max(4, Math.round((s.wage / maxWage) * barMax)),
+      }
+    })
   },
 
   loadStats() {
