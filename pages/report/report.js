@@ -21,6 +21,7 @@ Page({
     highlightIndex: -1,
     overview: { totalWage: 0, totalDuration: 0, totalCount: 0, avgWage: 0 },
     stats: [],
+    chartRevision: 0,
   },
 
   onLoad() {
@@ -29,12 +30,20 @@ Page({
   },
 
   onShow() {
+    app.reloadRecordsFromStorage()
     const today = app.getDateString()
     if (!this.data.anchorDate) {
       this.setData({ anchorDate: today, maxDate: today })
     } else {
       this.setData({ maxDate: today })
     }
+    this.loadStats()
+  },
+
+
+  /** 记录变更时若报表页在页面栈内则立即刷新 */
+  onRecordsChanged() {
+    app.reloadRecordsFromStorage()
     this.loadStats()
   },
 
@@ -145,6 +154,7 @@ Page({
 
     this.setData({
       stats,
+      chartRevision: (this.data.chartRevision || 0) + 1,
       highlightIndex,
       overview: { totalWage, totalDuration, totalCount, avgWage },
       emptyHint,

@@ -15,8 +15,15 @@ Page({
   },
 
   onShow() {
+    app.reloadRecordsFromStorage()
     const app = getApp()
     this.setData({ filterDate: app.getDateString() })
+    this.loadRecords()
+  },
+
+
+  onRecordsChanged() {
+    app.reloadRecordsFromStorage()
     this.loadRecords()
   },
 

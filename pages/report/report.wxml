@@ -53,6 +53,7 @@
             stats="{{stats}}"
             avg-wage="{{overview.avgWage}}"
             highlight-index="{{highlightIndex}}"
+            chart-revision="{{chartRevision}}"
           />
         </view>
         <text class="ui-section-footnote" wx:if="{{viewMode === 'day' || viewMode === 'week'}}">深绿色柱为所选日期；长按可查看工时与条数</text>

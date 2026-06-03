@@ -12,6 +12,7 @@ Page({
   },
 
   onShow() {
+    app.reloadRecordsFromStorage()
     const app = getApp()
     const rate = app.getHourlyRate()
     const records = app.getRecords()
@@ -27,6 +28,10 @@ Page({
       totalDuration,
       totalWage
     })
+  },
+
+  onRecordsChanged() {
+    this.onShow()
   },
 
   onRateInput(e) {

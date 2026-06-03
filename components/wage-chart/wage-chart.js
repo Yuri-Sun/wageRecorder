@@ -16,6 +16,10 @@ Component({
       type: Number,
       value: -1,
     },
+    chartRevision: {
+      type: Number,
+      value: 0,
+    },
   },
 
   data: {
@@ -41,7 +45,7 @@ Component({
   },
 
   observers: {
-    'stats, avgWage, highlightIndex'() {
+    'stats, stats.** , avgWage, highlightIndex, chartRevision'() {
       if (this.properties.stats.length === 0) {
         return
       }
