@@ -2,14 +2,29 @@
 <navigation-bar title="打卡记录" back="{{false}}" color="black" background="#FFF"></navigation-bar>
 
 <view class="ui-segment-bar">
-  <picker mode="date" value="{{filterDate}}" bindchange="onDateChange">
-    <view class="ui-segment-item {{filterType === 'day' ? 'ui-segment-item--active' : ''}}">
-      {{filterType === 'day' ? filterDate : '日期'}}
-    </view>
-  </picker>
   <view class="ui-segment-item {{filterType === 'all' ? 'ui-segment-item--active' : ''}}" bindtap="setFilter" data-type="all">全部</view>
+  <view class="ui-segment-item {{filterType === 'day' ? 'ui-segment-item--active' : ''}}" bindtap="setFilter" data-type="day">按日</view>
   <view class="ui-segment-item {{filterType === 'week' ? 'ui-segment-item--active' : ''}}" bindtap="setFilter" data-type="week">本周</view>
   <view class="ui-segment-item {{filterType === 'month' ? 'ui-segment-item--active' : ''}}" bindtap="setFilter" data-type="month">本月</view>
+</view>
+
+<view class="ui-date-filter-bar" wx:if="{{filterType !== 'all'}}">
+  <picker
+    mode="date"
+    fields="{{filterType === 'month' ? 'month' : 'day'}}"
+    value="{{filterDate}}"
+    end="{{maxDate}}"
+    bindchange="onFilterDateChange"
+  >
+    <view class="ui-date-filter-row">
+      <text class="ui-date-filter-hint">{{filterType === 'day' ? '查看日期' : (filterType === 'week' ? '查看周（选周内任意一天）' : '查看月份')}}</text>
+      <text class="ui-date-filter-value text-nowrap">{{filterType === 'month' ? filterMonthDisplay : filterDate}}</text>
+      <text class="ui-date-filter-chevron">›</text>
+    </view>
+  </picker>
+  <text class="ui-section-footnote record-range-hint" wx:if="{{weekRangeLabel && (filterType === 'week' || filterType === 'day')}}">
+    {{filterType === 'week' ? '当周' : '所属周'}} {{weekRangeLabel}}
+  </text>
 </view>
 
 <scroll-view class="record-scroll ui-scroll" scroll-y>
@@ -19,15 +34,15 @@
       <text class="ui-section-title">筛选结果</text>
       <view class="ui-group ui-stats-grid">
         <view class="ui-stat-item">
-          <text class="ui-stat-value">{{summary.count}}</text>
+          <text class="ui-stat-value text-nowrap">{{summary.count}}</text>
           <text class="ui-stat-label">记录数</text>
         </view>
         <view class="ui-stat-item">
-          <text class="ui-stat-value">{{summary.totalDuration}}</text>
+          <text class="ui-stat-value text-nowrap">{{summary.totalDuration}}</text>
           <text class="ui-stat-label">总工时(h)</text>
         </view>
         <view class="ui-stat-item">
-          <text class="ui-stat-value ui-stat-value--accent">A${{summary.totalWage}}</text>
+          <text class="ui-stat-value ui-stat-value--accent text-nowrap">A${{summary.totalWage}}</text>
           <text class="ui-stat-label">总工资</text>
         </view>
       </view>
@@ -44,14 +59,15 @@
         >
           <view class="ui-cell__body record-cell-main">
             <text class="ui-cell__title text-nowrap">{{item.date}}</text>
-            <text class="ui-cell__desc text-nowrap">{{item.startTime}} - {{item.endTime}} · {{item.duration}}h</text>
-            <text class="ui-cell__desc text-nowrap" wx:if="{{item.note}}">备注：{{item.note}}</text>
+            <text class="ui-cell__desc text-nowrap">{{item.startTime}} - {{item.endTime}}</text>
+            <text class="ui-cell__desc text-nowrap" wx:if="{{item.note}}">{{item.note}}</text>
           </view>
           <view class="record-cell-side">
             <text class="record-wage text-nowrap">A${{item.wage}}</text>
+            <text class="ui-cell__desc text-nowrap">{{item.duration}}h</text>
             <view class="record-actions">
-              <text class="record-action record-action--edit" catchtap="editRecord" data-id="{{item.id}}">编辑</text>
-              <text class="record-action record-action--del" catchtap="deleteRecord" data-id="{{item.id}}">删除</text>
+              <text class="record-action record-action--edit" bindtap="editRecord" data-id="{{item.id}}">编辑</text>
+              <text class="record-action record-action--del" bindtap="deleteRecord" data-id="{{item.id}}">删除</text>
             </view>
           </view>
         </view>
@@ -79,21 +95,24 @@
         <view class="record-form-col">
           <text class="record-form-label">上班</text>
           <picker mode="time" value="{{editForm.startTime}}" bindchange="onStartTimeChange">
-            <view class="record-form-picker text-nowrap">{{editForm.startTime}}</view>
+            <view class="record-form-picker text-nowrap {{editErrors.startTime ? 'record-form-picker--error' : ''}}">{{editForm.startTime || '请选择'}}</view>
           </picker>
+          <text class="record-form-error" wx:if="{{editErrors.startTime}}">{{editErrors.startTime}}</text>
         </view>
         <view class="record-form-col">
           <text class="record-form-label">下班</text>
           <picker mode="time" value="{{editForm.endTime}}" bindchange="onEndTimeChange">
-            <view class="record-form-picker text-nowrap">{{editForm.endTime}}</view>
+            <view class="record-form-picker text-nowrap {{editErrors.endTime ? 'record-form-picker--error' : ''}}">{{editForm.endTime || '请选择'}}</view>
           </picker>
+          <text class="record-form-error" wx:if="{{editErrors.endTime}}">{{editErrors.endTime}}</text>
         </view>
       </view>
       <view class="record-form-block">
         <text class="record-form-label">日期</text>
         <picker mode="date" value="{{editForm.date}}" bindchange="onEditDateChange">
-          <view class="record-form-picker text-nowrap">{{editForm.date}}</view>
+          <view class="record-form-picker text-nowrap {{editErrors.date ? 'record-form-picker--error' : ''}}">{{editForm.date || '请选择'}}</view>
         </picker>
+        <text class="record-form-error" wx:if="{{editErrors.date}}">{{editErrors.date}}</text>
       </view>
       <view class="record-form-block">
         <text class="record-form-label">备注</text>
@@ -105,6 +124,7 @@
         </view>
         <text class="meal-label text-nowrap">扣除午饭半小时</text>
       </view>
+      <text class="record-form-error record-form-error--block" wx:if="{{editErrors.form}}">{{editErrors.form}}</text>
       <view class="record-preview text-nowrap">
         <text>预览：{{editPreview.duration}}h · A${{editPreview.wage}}</text>
       </view>

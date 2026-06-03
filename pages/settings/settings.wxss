@@ -135,27 +135,39 @@ page {
 .settings-range-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 24rpx;
   padding: 20rpx 0;
   border-bottom: 1rpx solid #f0f0f0;
 }
 
 .settings-range-label {
+  flex-shrink: 0;
+  width: 152rpx;
   font-size: 28rpx;
   color: #666;
-  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.settings-range-picker-wrap {
+  flex: 1;
+  min-width: 0;
 }
 
 .settings-range-picker {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 8rpx;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .settings-range-value {
+  flex-shrink: 0;
   font-size: 30rpx;
   font-weight: 600;
   color: #07c160;
+  white-space: nowrap;
 }
 
 .settings-range-presets {

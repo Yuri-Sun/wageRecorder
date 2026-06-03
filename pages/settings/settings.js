@@ -4,6 +4,7 @@ const {
   filterRecordsByDateRange,
   getDefaultExportRange,
 } = require('../../utils/record-filter.js')
+const { runPullDownRefresh } = require('../../utils/page-refresh.js')
 
 Page({
   data: {
@@ -19,7 +20,15 @@ Page({
     exportRecordCount: 0,
   },
 
+  onPullDownRefresh() {
+    runPullDownRefresh(() => this.refreshPageData())
+  },
+
   onShow() {
+    this.refreshPageData()
+  },
+
+  refreshPageData() {
     app.reloadRecordsFromStorage()
     const today = app.getDateString()
     const records = app.getRecords()
@@ -47,7 +56,7 @@ Page({
   },
 
   onRecordsChanged() {
-    this.onShow()
+    this.refreshPageData()
   },
 
   clampStart(start, end) {

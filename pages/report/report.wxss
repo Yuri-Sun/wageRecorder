@@ -23,26 +23,40 @@ page {
 .report-date-picker {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 16rpx;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .report-date-hint {
+  flex: 1;
+  min-width: 0;
   font-size: 26rpx;
   color: #888;
-  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .report-date-value {
-  flex: 1;
+  flex-shrink: 0;
   font-size: 30rpx;
   font-weight: 600;
   color: #07c160;
+  white-space: nowrap;
 }
 
 .report-date-chevron {
+  flex-shrink: 0;
   font-size: 36rpx;
   color: #ccc;
   line-height: 1;
+}
+
+.report-date-bar picker {
+  display: block;
+  width: 100%;
 }
 
 .report-week-hint {

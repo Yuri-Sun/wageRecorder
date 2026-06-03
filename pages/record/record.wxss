@@ -13,6 +13,11 @@ page {
   height: 0;
 }
 
+.record-range-hint {
+  display: block;
+  padding-top: 8rpx;
+}
+
 .ui-cell--record {
   align-items: flex-start;
   min-height: 120rpx;
@@ -111,6 +116,24 @@ page {
   justify-content: flex-start;
   padding: 16rpx 24rpx 8rpx;
   margin-bottom: 0;
+}
+
+
+.record-form-error {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #fa5151;
+  line-height: 1.35;
+}
+
+.record-form-error--block {
+  padding: 0 24rpx 8rpx;
+}
+
+.record-form-picker--error {
+  border-color: #fa5151;
+  color: #fa5151;
 }
 
 .record-preview {

@@ -53,7 +53,7 @@
       <view class="ui-group settings-export-range">
         <view class="settings-range-row">
           <text class="settings-range-label">开始日期</text>
-          <picker mode="date" value="{{exportStartDate}}" end="{{exportEndDate}}" bindchange="onExportStartChange">
+          <picker class="settings-range-picker-wrap" mode="date" value="{{exportStartDate}}" end="{{exportEndDate}}" bindchange="onExportStartChange">
             <view class="settings-range-picker">
               <text class="settings-range-value text-nowrap">{{exportStartDate}}</text>
               <text class="ui-cell__chevron">›</text>
@@ -63,6 +63,7 @@
         <view class="settings-range-row">
           <text class="settings-range-label">结束日期</text>
           <picker
+            class="settings-range-picker-wrap"
             mode="date"
             value="{{exportEndDate}}"
             start="{{exportStartDate}}"

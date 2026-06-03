@@ -7,6 +7,7 @@ const {
   formatMonthLabel,
   formatMonthPickerDisplay,
 } = require('../../utils/report-range.js')
+const { runPullDownRefresh } = require('../../utils/page-refresh.js')
 
 const EMPTY_HINTS = {
   day: '当前所选日期所在周暂无打卡。请用上方日期切换其它周，或去首页打卡。',
@@ -37,18 +38,31 @@ Page({
   },
 
   onShow() {
-    app.reloadRecordsFromStorage()
-    const today = app.getDateString()
     if (!this.data.anchorDate) {
-      this.setData({ anchorDate: today, maxDate: today, anchorMonthDisplay: formatMonthPickerDisplay(today) })
-    } else {
-      this.setData({ maxDate: today })
+      const today = app.getDateString()
+      this.setData({ anchorDate: today, anchorMonthDisplay: formatMonthPickerDisplay(today) })
     }
-    this.loadStats()
+    this.refreshFromStorage()
   },
 
   onRecordsChanged() {
     app.reloadRecordsFromStorage()
+    this.loadStats()
+  },
+
+  onPullDownRefresh() {
+    runPullDownRefresh(() => this.refreshFromStorage())
+  },
+
+  refreshFromStorage() {
+    app.reloadRecordsFromStorage()
+    const today = app.getDateString()
+    const anchorDate = this.data.anchorDate || today
+    this.setData({
+      maxDate: today,
+      anchorDate,
+      anchorMonthDisplay: formatMonthPickerDisplay(anchorDate),
+    })
     this.loadStats()
   },
 

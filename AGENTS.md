@@ -17,6 +17,16 @@ npm test
 npm run lint
 ```
 
+
+## 图表包体
+
+- 报表使用 `components/ec-canvas/echarts.js`（由 `npm run build:echarts` 从 `echarts.common.min.js` 生成，约 650KB）。
+- 详见 `docs/CHART_BUNDLE.md`。
+
+## 下拉刷新
+
+- 记录 / 报表 / 设置页已开启 `enablePullDownRefresh`，逻辑在 `utils/page-refresh.js`。
+
 ## Cursor Cloud
 
 - VM 更新脚本：`npm install`
@@ -43,6 +53,16 @@ npm run lint
 - Manual regression: `TEST_CHECKLIST.md`
 - App ID: `project.config.json` (`wx618c2a8d0fe1087e`)
 - Base library: `project.private.config.json` (`libVersion` 3.16.1)
+
+
+## 图表包体
+
+- 报表使用 `components/ec-canvas/echarts.js`（由 `npm run build:echarts` 从 `echarts.common.min.js` 生成，约 650KB）。
+- 详见 `docs/CHART_BUNDLE.md`。
+
+## 下拉刷新
+
+- 记录 / 报表 / 设置页已开启 `enablePullDownRefresh`，逻辑在 `utils/page-refresh.js`。
 
 ## Cursor Cloud specific instructions
 
