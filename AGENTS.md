@@ -1,29 +1,51 @@
 # AGENTS.md
 
-## 项目概览
+## Project overview
 
-**wageRecorder**：纯前端微信小程序，本地存储考勤与工资数据。业务计算集中在 `utils/wage.js`，`app.js` 负责 `wx` 存储与页面 API。
+**wageRecorder** is a client-only WeChat Mini Program for punch in/out, work-hour tracking, and wage calculation. There is no backend, `package.json`, or automated test runner in the repository.
 
-## Cursor Cloud 说明
+- Entry: `app.json`, `app.js`
+- Manual regression: `TEST_CHECKLIST.md`
+- App ID: `project.config.json` (`wx618c2a8d0fe1087e`)
+- Base library: `project.private.config.json` (`libVersion` 3.16.1)
 
-### 依赖与脚本
+## Cursor Cloud specific instructions
+
+### What runs in the cloud VM
+
+This repo has **no npm dependencies** to install. Cloud agents can validate the project headlessly:
+
+| Check | Command |
+|-------|---------|
+| JS syntax | `find . -name '*.js' -exec node --check {} \;` |
+| ESLint | See note below — use ECMAScript 2020 parser because source uses `??` |
+| Core logic smoke | Run `/tmp/verify-wage-recorder.mjs` (create once per session; see setup agent transcript) or re-run the inline checks from that script |
+| Asset integrity | Confirm `pages/*/*.{js,wxml,wxss,json}` and `images/tab_*.png` exist |
+
+**ESLint note:** `.eslintrc.js` sets `ecmaVersion: 2018`, but the code uses nullish coalescing (`??`). Until the config is updated, lint with:
 
 ```bash
-npm install
-npm test      # Node 内置 test runner，覆盖 utils/wage.js
-npm run lint  # ESLint，ecmaVersion 2020
+npx --yes eslint@8 . --ext .js --parser-options '{"ecmaVersion":2020}'
 ```
 
-VM 启动更新脚本建议：`npm install`（见 `package.json`）。
+### Running the app (required for UI / E2E)
 
-### 运行 UI
+The mini program **must** be opened in [WeChat Developer Tools](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html) (macOS/Windows). Point the tool at the repo root (`/workspace`). Use the simulator and follow `TEST_CHECKLIST.md` for manual regression.
 
-须使用 [微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html) 打开仓库根目录。`app.json` 使用 Skyline；`project.private.config.json` 中 `skylineRenderEnable` 应为 `true`。
+- Hot reload: enabled in `project.private.config.json` (`compileHotReLoad`)
+- Renderer: Skyline + glass-easel (`app.json`) — use a recent DevTools base library (3.x+)
+- There is no `npm run dev` or local HTTP server
 
-### 扣饭逻辑
+### Lint / test / build summary
 
-统一通过 `utils/wage.js` 的 `applyMealDeduction` / `calcDurationAndWageWithMeal`；记录上持久化字段 `mealDeducted`，改时薪时 `recalcAllWages` 会保留扣饭。
+| Task | How |
+|------|-----|
+| Lint | ESLint via editor extension or `npx eslint@8` (see parser note above) |
+| Test | Manual only (`TEST_CHECKLIST.md`) |
+| Build / release | WeChat DevTools: Preview / Upload (minify flags in `project.config.json`) |
 
-### 手工回归
+### Gotchas
 
-见 `TEST_CHECKLIST.md`。
+- Do not expect `wx` APIs to work under plain Node — UI flows need DevTools or a real device preview.
+- Meal deduction subtracts **0.5h** from duration on punch-out (`pages/index/index.js`) and in record edits (`pages/record/record.js`).
+- Export from settings uses clipboard fallback when file APIs are unavailable in the simulator.
