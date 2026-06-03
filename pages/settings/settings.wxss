@@ -1,5 +1,5 @@
 /**pages/settings/settings.wxss**/
-/* 参考微信设计指南 + WeUI Cells：分组标题 + 白底列表组 */
+@import '../../styles/ui-kit.wxss';
 
 page {
   height: 100vh;
@@ -13,56 +13,18 @@ page {
   height: 0;
 }
 
-.settings-page {
-  padding: 24rpx 24rpx 48rpx;
-  box-sizing: border-box;
-}
-
-/* 分区标题（组外，浅灰底上） */
-.settings-section {
-  margin-bottom: 32rpx;
-}
-
-.settings-section-title {
-  display: block;
-  padding: 0 16rpx 12rpx;
-  font-size: 26rpx;
-  color: #888888;
-  font-weight: 500;
-}
-
-.settings-section-footnote {
-  display: block;
-  padding: 12rpx 16rpx 0;
-  font-size: 24rpx;
-  color: #b2b2b2;
-  line-height: 1.5;
-}
-
-.settings-section--danger {
-  margin-top: 16rpx;
-}
-
-/* 白底圆角分组（类似 WeUI cells） */
-.settings-group {
-  background: #ffffff;
-  border-radius: 16rpx;
-  overflow: hidden;
-}
-
 .settings-group-footer {
   padding: 20rpx 32rpx 28rpx;
   border-top: 1rpx solid #f0f0f0;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
   gap: 16rpx;
 }
 
 .settings-tip {
   font-size: 24rpx;
-  line-height: 1.5;
   text-align: center;
+  line-height: 1.5;
 }
 
 .settings-tip--warn {
@@ -85,90 +47,6 @@ page {
   border: none;
 }
 
-/* 列表行 */
-.settings-cell {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  min-height: 112rpx;
-  padding: 24rpx 32rpx;
-  box-sizing: border-box;
-  border-bottom: 1rpx solid #f0f0f0;
-}
-
-.settings-cell--last,
-.settings-cell--form {
-  border-bottom: none;
-}
-
-.settings-cell--form {
-  align-items: center;
-  justify-content: space-between;
-  gap: 24rpx;
-}
-
-.settings-cell__body {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6rpx;
-}
-
-.settings-cell__body--flex {
-  flex: 1;
-}
-
-.settings-cell__title {
-  font-size: 32rpx;
-  color: #191919;
-  font-weight: 500;
-  line-height: 1.35;
-}
-
-.settings-cell__desc {
-  font-size: 24rpx;
-  color: #999999;
-  line-height: 1.4;
-}
-
-.settings-cell__icon {
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 12rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #ffffff;
-  flex-shrink: 0;
-  margin-right: 24rpx;
-}
-
-.settings-cell__icon--green {
-  background: linear-gradient(135deg, #07c160, #06ad56);
-}
-
-.settings-cell__icon--blue {
-  background: linear-gradient(135deg, #10aeff, #0e9de6);
-}
-
-.settings-cell__chevron {
-  font-size: 36rpx;
-  color: #c7c7cc;
-  font-weight: 300;
-  flex-shrink: 0;
-  margin-left: 8rpx;
-  line-height: 1;
-}
-
-.settings-cell--link:active {
-  background: #f7f7f7;
-}
-
-/* 时薪输入 */
 .settings-rate-box {
   display: flex;
   flex-direction: row;
@@ -197,63 +75,43 @@ page {
   height: 48rpx;
 }
 
-/* 三列数据概览 */
-.settings-stats-grid {
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  padding: 32rpx 16rpx;
+.settings-cell--form {
+  align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
+  border-bottom: none;
 }
 
-.settings-stat-item {
-  flex: 1;
+.settings-cell__icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 12rpx;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8rpx;
-  position: relative;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #ffffff;
+  flex-shrink: 0;
+  margin-right: 24rpx;
 }
 
-.settings-stat-item:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 12rpx;
-  bottom: 12rpx;
-  width: 1rpx;
-  background: #f0f0f0;
+.settings-cell__icon--green {
+  background: linear-gradient(135deg, #07c160, #06ad56);
 }
 
-.settings-stat-value {
-  font-size: 40rpx;
-  font-weight: 700;
-  color: #191919;
-  line-height: 1.2;
-  white-space: nowrap;
+.settings-cell__icon--blue {
+  background: linear-gradient(135deg, #10aeff, #0e9de6);
 }
 
-.settings-stat-value--accent {
-  color: #07c160;
-  font-size: 34rpx;
+.settings-cell--link .ui-cell__body {
+  flex: 1;
 }
 
-.settings-stat-label {
-  font-size: 22rpx;
-  color: #999999;
-  white-space: nowrap;
-}
-
-/* 危险操作 */
 .settings-cell--danger {
   justify-content: center;
   border-bottom: none;
   min-height: 96rpx;
-  padding: 28rpx 32rpx;
-}
-
-.settings-cell--danger:active {
-  background: #f7f7f7;
 }
 
 .settings-danger-text {

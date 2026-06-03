@@ -1,98 +1,89 @@
 <!--pages/index/index.wxml-->
 <navigation-bar title="考勤打卡" back="{{false}}" color="black" background="#FFF"></navigation-bar>
-<scroll-view class="scrollarea" scroll-y type="list">
-  <view class="page-container">
 
-    <!-- 日期时间显示 -->
-    <view class="card clock-header">
-      <view class="date-display">{{dateText}}</view>
-      <view class="time-display">{{timeText}}</view>
-      <view class="weekday">{{weekday}}</view>
-    </view>
+<scroll-view class="index-scroll ui-scroll" scroll-y>
+  <view class="ui-page">
 
-    <!-- 今日统计 -->
-    <view class="card stats-card">
-      <view class="flex-between" style="margin-bottom: 32rpx;">
-        <view class="stat-item">
-          <view class="stat-label text-nowrap">今日工时</view>
-          <view class="stat-value text-nowrap">{{todayWork.duration}}<text class="stat-unit">小时</text></view>
-        </view>
-        <view class="stat-divider"></view>
-        <view class="stat-item">
-          <view class="stat-label text-nowrap">今日预估工资</view>
-          <view class="stat-value text-green text-nowrap">A${{todayWork.wage}}</view>
-        </view>
-      </view>
-      <view class="flex-between">
-        <view class="stat-item">
-          <view class="stat-label text-nowrap">时薪</view>
-          <view class="stat-value-small text-orange text-nowrap">A${{hourlyRate}}/小时</view>
-        </view>
-        <view class="stat-item">
-          <view class="stat-label text-nowrap">今日打卡次数</view>
-          <view class="stat-value-small text-nowrap">{{todayPunchCount}}</view>
-        </view>
+    <view class="ui-section">
+      <view class="ui-group ui-clock-hero">
+        <text class="ui-clock-date text-nowrap">{{dateText}}</text>
+        <text class="ui-clock-time text-nowrap">{{timeText}}</text>
+        <text class="ui-clock-weekday text-nowrap">{{weekday}}</text>
       </view>
     </view>
 
-    <!-- 打卡按钮区域 -->
-    <view class="card punch-area">
-      <view class="punch-status" wx:if="{{punchState === 'off'}}">
-        <view class="punch-hint">点击上班打卡</view>
+    <view class="ui-section">
+      <text class="ui-section-title">今日概览</text>
+      <view class="ui-group ui-stats-grid">
+        <view class="ui-stat-item">
+          <text class="ui-stat-value">{{todayWork.duration}}</text>
+          <text class="ui-stat-label">工时(h)</text>
+        </view>
+        <view class="ui-stat-item">
+          <text class="ui-stat-value ui-stat-value--accent">A${{todayWork.wage}}</text>
+          <text class="ui-stat-label">预估工资</text>
+        </view>
+        <view class="ui-stat-item">
+          <text class="ui-stat-value">{{todayPunchCount}}</text>
+          <text class="ui-stat-label">打卡次数</text>
+        </view>
       </view>
-      <view class="punch-status" wx:elif="{{punchState === 'on'}}">
-        <view class="punch-hint">已上班 {{startTime}}，请点击下班打卡</view>
-        <view class="live-duration">
-          <view class="live-duration-label">当前预估工资</view>
-          <view class="live-duration-value">
-            <text class="live-duration-num text-nowrap">A${{liveWage}}</text>
+      <text class="ui-section-footnote">时薪 A${{hourlyRate}}/小时</text>
+    </view>
+
+    <view class="ui-section">
+      <text class="ui-section-title">打卡</text>
+      <view class="ui-group ui-punch-panel">
+        <view wx:if="{{punchState === 'off'}}">
+          <view class="ui-punch-hint">点击下方按钮开始上班打卡</view>
+        </view>
+        <view wx:elif="{{punchState === 'on'}}">
+          <view class="ui-punch-hint text-nowrap">已上班 {{startTime}}，请下班打卡</view>
+          <view class="ui-live-box">
+            <view class="ui-live-label">当前预估工资</view>
+            <view class="ui-live-amount text-nowrap">A${{liveWage}}</view>
+            <view class="ui-live-sub text-nowrap">已工作 {{liveDuration}} 小时</view>
           </view>
-          <view class="live-wage">{{liveDuration}} 小时</view>
-        </view>
-        <view class="meal-check" bindtap="toggleDeductMeal">
-          <view class="meal-checkbox {{deductMeal ? 'checked' : ''}}">
-            <text wx:if="{{deductMeal}}">√</text>
-          </view>
-          <text class="meal-label text-nowrap">扣除午饭半小时</text>
-        </view>
-      </view>
-      <view class="punch-status" wx:else>
-        <view class="punch-hint">今日已完成打卡，可继续添加</view>
-      </view>
-
-      <view class="punch-buttons">
-        <button class="btn-primary punch-btn" wx:if="{{punchState === 'off'}}" bindtap="handlePunchIn">
-          上班打卡
-        </button>
-        <button class="btn-primary punch-btn punch-btn-out" wx:elif="{{punchState === 'on'}}" bindtap="handlePunchOut">
-          下班打卡
-        </button>
-        <view class="flex-row" wx:else style="gap: 24rpx; width: 100%;">
-          <button class="btn-outline flex-1" bindtap="handlePunchIn">继续上班</button>
-          <button class="btn-primary flex-1" bindtap="handlePunchIn">快速打卡</button>
-        </view>
-      </view>
-    </view>
-
-    <!-- 最近记录 -->
-    <view class="card">
-      <view class="flex-between" style="margin-bottom: 24rpx;">
-        <text class="card-title" style="margin-bottom: 0;">最近打卡记录</text>
-        <text class="text-small text-green" bindtap="goToRecords">查看全部 ›</text>
-      </view>
-      <block wx:if="{{recentRecords.length > 0}}">
-        <view class="recent-item" wx:for="{{recentRecords}}" wx:key="id">
-          <view class="recent-item-row">
-            <view class="recent-meta">
-              <text class="recent-date text-nowrap">{{item.date}}</text>
-              <text class="recent-time text-nowrap">{{item.startTime}} - {{item.endTime}}</text>
+          <view class="meal-check" bindtap="toggleDeductMeal">
+            <view class="meal-checkbox {{deductMeal ? 'checked' : ''}}">
+              <text wx:if="{{deductMeal}}">√</text>
             </view>
-            <text class="recent-wage text-nowrap flex-shrink-0">A${{item.wage}}</text>
+            <text class="meal-label text-nowrap">扣除午饭半小时</text>
           </view>
         </view>
-      </block>
-      <view class="empty-state" wx:else style="padding: 40rpx 0;">
-        <text class="empty-text">暂无打卡记录</text>
+        <view wx:else>
+          <view class="ui-punch-hint">今日已有打卡记录，可继续添加</view>
+        </view>
+
+        <view class="punch-buttons">
+          <button class="btn-primary punch-btn" wx:if="{{punchState === 'off'}}" bindtap="handlePunchIn">上班打卡</button>
+          <button class="btn-primary punch-btn punch-btn-out" wx:elif="{{punchState === 'on'}}" bindtap="handlePunchOut">下班打卡</button>
+          <view class="punch-buttons-row" wx:else>
+            <button class="btn-outline punch-btn-half" bindtap="handlePunchIn">继续上班</button>
+            <button class="btn-primary punch-btn-half" bindtap="handlePunchIn">快速打卡</button>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="ui-section">
+      <view class="ui-section-header">
+        <text class="ui-section-title ui-section-title--inline">最近记录</text>
+        <text class="ui-link" bindtap="goToRecords">全部 ›</text>
+      </view>
+      <view class="ui-group" wx:if="{{recentRecords.length > 0}}">
+        <view class="ui-cell ui-cell--record {{index === recentRecords.length - 1 ? 'ui-cell--last' : ''}}" wx:for="{{recentRecords}}" wx:key="id" wx:for-index="index">
+          <view class="ui-cell__body">
+            <text class="ui-cell__title text-nowrap">{{item.date}}</text>
+            <text class="ui-cell__desc text-nowrap">{{item.startTime}} - {{item.endTime}}</text>
+          </view>
+          <text class="ui-cell__extra text-nowrap">A${{item.wage}}</text>
+        </view>
+      </view>
+      <view class="ui-group" wx:else>
+        <view class="ui-empty">
+          <text class="ui-empty-text">暂无打卡记录</text>
+        </view>
       </view>
     </view>
 

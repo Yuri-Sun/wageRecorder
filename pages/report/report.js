@@ -7,7 +7,6 @@ Page({
     periodLabel: '本月',
     overview: { totalWage: 0, totalDuration: 0, totalCount: 0, avgWage: 0 },
     stats: [],
-    chartHeight: 300
   },
 
   onShow() {
@@ -93,18 +92,9 @@ Page({
     const totalCount = stats.reduce((sum, s) => sum + s.count, 0)
     const avgWage = stats.length > 0 ? Math.round((totalWage / stats.length) * 100) / 100 : 0
 
-    // 计算柱状图高度
-    const maxWage = stats.length > 0 ? Math.max(...stats.map(s => s.wage)) : 1
-    const barMaxHeight = 200
-    stats = stats.map(s => ({
-      ...s,
-      barHeight: maxWage > 0 ? Math.max(4, (s.wage / maxWage) * barMaxHeight) : 0
-    }))
-
     this.setData({
       stats,
       overview: { totalWage, totalDuration, totalCount, avgWage },
-      chartHeight: barMaxHeight + 60
     })
   }
 })

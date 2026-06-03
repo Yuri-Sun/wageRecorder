@@ -1,27 +1,25 @@
 <!--pages/settings/settings.wxml-->
 <navigation-bar title="设置" back="{{false}}" color="black" background="#FFF"></navigation-bar>
 
-<scroll-view class="settings-scroll" scroll-y enhanced show-scrollbar="{{false}}">
-  <view class="settings-page">
+<scroll-view class="settings-scroll ui-scroll" scroll-y>
+  <view class="ui-page">
 
-    <!-- 时薪：WeUI 表单行 + 组内说明 -->
-    <view class="settings-section">
-      <text class="settings-section-title">时薪</text>
-      <view class="settings-group">
-        <view class="settings-cell settings-cell--form">
-          <view class="settings-cell__body">
-            <text class="settings-cell__title">默认时薪</text>
-            <text class="settings-cell__desc">澳元 / 小时，保存后重算全部工资</text>
+    <view class="ui-section">
+      <text class="ui-section-title">时薪</text>
+      <view class="ui-group">
+        <view class="ui-cell settings-cell--form">
+          <view class="ui-cell__body">
+            <text class="ui-cell__title">默认时薪</text>
+            <text class="ui-cell__desc">澳元 / 小时，保存后重算全部工资</text>
           </view>
           <view class="settings-rate-box">
-            <text class="settings-rate-currency">A$</text>
+            <text class="settings-rate-currency text-nowrap">A$</text>
             <input
               class="settings-rate-input"
               type="digit"
               value="{{rateInputValue}}"
               bindinput="onRateInput"
               bindblur="onRateBlur"
-              placeholder="0"
             />
           </view>
         </view>
@@ -32,57 +30,54 @@
       </view>
     </view>
 
-    <!-- 数据概览：三列指标卡 -->
-    <view class="settings-section">
-      <text class="settings-section-title">数据概览</text>
-      <view class="settings-group settings-stats-grid">
-        <view class="settings-stat-item">
-          <text class="settings-stat-value">{{totalRecords}}</text>
-          <text class="settings-stat-label">打卡记录</text>
+    <view class="ui-section">
+      <text class="ui-section-title">数据概览</text>
+      <view class="ui-group ui-stats-grid">
+        <view class="ui-stat-item">
+          <text class="ui-stat-value">{{totalRecords}}</text>
+          <text class="ui-stat-label">打卡记录</text>
         </view>
-        <view class="settings-stat-item">
-          <text class="settings-stat-value">{{totalDuration}}</text>
-          <text class="settings-stat-label">总工时(h)</text>
+        <view class="ui-stat-item">
+          <text class="ui-stat-value">{{totalDuration}}</text>
+          <text class="ui-stat-label">总工时(h)</text>
         </view>
-        <view class="settings-stat-item">
-          <text class="settings-stat-value settings-stat-value--accent">A${{totalWage}}</text>
-          <text class="settings-stat-label">总工资</text>
+        <view class="ui-stat-item">
+          <text class="ui-stat-value ui-stat-value--accent">A${{totalWage}}</text>
+          <text class="ui-stat-label">总工资</text>
         </view>
       </view>
     </view>
 
-    <!-- 导出：列表行 + 箭头 -->
-    <view class="settings-section">
-      <text class="settings-section-title">导出</text>
-      <view class="settings-group">
-        <view class="settings-cell settings-cell--link" bindtap="exportCSV">
+    <view class="ui-section">
+      <text class="ui-section-title">导出</text>
+      <view class="ui-group">
+        <view class="ui-cell settings-cell--link" bindtap="exportCSV">
           <view class="settings-cell__icon settings-cell__icon--green">表</view>
-          <view class="settings-cell__body settings-cell__body--flex">
-            <text class="settings-cell__title">导出表格</text>
-            <text class="settings-cell__desc">CSV，可用 Excel 打开</text>
+          <view class="ui-cell__body">
+            <text class="ui-cell__title">导出表格</text>
+            <text class="ui-cell__desc">CSV，可用 Excel 打开</text>
           </view>
-          <text class="settings-cell__chevron">›</text>
+          <text class="ui-cell__chevron">›</text>
         </view>
-        <view class="settings-cell settings-cell--link settings-cell--last" bindtap="exportTXT">
+        <view class="ui-cell settings-cell--link ui-cell--last" bindtap="exportTXT">
           <view class="settings-cell__icon settings-cell__icon--blue">文</view>
-          <view class="settings-cell__body settings-cell__body--flex">
-            <text class="settings-cell__title">导出文本</text>
-            <text class="settings-cell__desc">TXT，便于阅读与分享</text>
+          <view class="ui-cell__body">
+            <text class="ui-cell__title">导出文本</text>
+            <text class="ui-cell__desc">TXT，便于阅读与分享</text>
           </view>
-          <text class="settings-cell__chevron">›</text>
+          <text class="ui-cell__chevron">›</text>
         </view>
       </view>
-      <text class="settings-section-footnote">导出全部本地记录，可分享到微信聊天</text>
+      <text class="ui-section-footnote">导出全部本地记录，可分享到微信聊天</text>
     </view>
 
-    <!-- 危险操作：独立分组 -->
-    <view class="settings-section settings-section--danger">
-      <view class="settings-group">
-        <view class="settings-cell settings-cell--danger" bindtap="clearAllData">
+    <view class="ui-section">
+      <view class="ui-group">
+        <view class="ui-cell settings-cell--danger" bindtap="clearAllData">
           <text class="settings-danger-text">清空所有数据</text>
         </view>
       </view>
-      <text class="settings-section-footnote">不可恢复，请谨慎操作</text>
+      <text class="ui-section-footnote">不可恢复，请谨慎操作</text>
     </view>
 
     <view class="settings-version">

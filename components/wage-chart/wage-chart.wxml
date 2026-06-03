@@ -1,0 +1,8 @@
+<view class="wage-chart-wrap">
+  <ec-canvas
+    id="wage-chart-dom"
+    canvas-id="wage-chart-canvas"
+    ec="{{ ec }}"
+    class="wage-chart-canvas"
+  />
+</view>

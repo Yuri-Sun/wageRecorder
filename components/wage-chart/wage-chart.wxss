@@ -1,0 +1,10 @@
+.wage-chart-wrap {
+  width: 100%;
+  height: 420rpx;
+}
+
+.wage-chart-canvas {
+  width: 100%;
+  height: 420rpx;
+  display: block;
+}

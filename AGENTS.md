@@ -2,28 +2,38 @@
 
 ## 项目概览
 
-**wageRecorder**：纯前端微信小程序，本地存储考勤与工资数据。业务计算集中在 `utils/wage.js`，`app.js` 负责 `wx` 存储与页面 API。
+**wageRecorder**：微信小程序，本地考勤与澳元（A$）工资计算。
 
-## Cursor Cloud 说明
+- 业务逻辑：`utils/wage.js` + `app.js`
+- 界面：`styles/ui-kit.wxss`（WeUI 风格分组列表）
+- 图表：`components/wage-chart` + `components/ec-canvas`（ECharts）
+- 说明：`docs/CHARTS.md`
 
-### 依赖与脚本
+## 开发命令
 
 ```bash
 npm install
-npm test      # Node 内置 test runner，覆盖 utils/wage.js
-npm run lint  # ESLint，ecmaVersion 2020
+npm test
+npm run lint
 ```
 
-VM 启动更新脚本建议：`npm install`（见 `package.json`）。
+## Cursor Cloud
 
-### 运行 UI
+- VM 更新脚本：`npm install`
+- UI 需在 [微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html) 预览
+- Skyline：`app.json` + `skylineRenderEnable: true`
+- 报表 ECharts 需基础库 ≥ 2.9.0
 
-须使用 [微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html) 打开仓库根目录。`app.json` 使用 Skyline；`project.private.config.json` 中 `skylineRenderEnable` 应为 `true`。
+## 页面结构约定
 
-### 扣饭逻辑
+| 类名 | 用途 |
+|------|------|
+| `ui-page` | 页面内边距容器 |
+| `ui-section` + `ui-section-title` | 组外标题 |
+| `ui-group` | 白底圆角卡片 |
+| `ui-stats-grid` | 三列指标 |
+| `ui-cell` | 列表行 |
+| `ui-table` | 工资明细表 |
+| `ui-segment-bar` | 顶部分段筛选 |
 
-统一通过 `utils/wage.js` 的 `applyMealDeduction` / `calcDurationAndWageWithMeal`；记录上持久化字段 `mealDeducted`，改时薪时 `recalcAllWages` 会保留扣饭。
-
-### 手工回归
-
-见 `TEST_CHECKLIST.md`。
+手工回归：`TEST_CHECKLIST.md`
