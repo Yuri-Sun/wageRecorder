@@ -61,3 +61,13 @@ page {
   padding: 8rpx 8rpx 0;
   overflow: hidden;
 }
+
+.report-table-row--highlight {
+  background: rgba(7, 193, 96, 0.08);
+}
+
+.report-table-row--highlight .ui-table-col--period,
+.report-table-row--highlight .ui-table-col--wage {
+  color: #07c160;
+  font-weight: 600;
+}

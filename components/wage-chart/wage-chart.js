@@ -11,6 +11,11 @@ Component({
       type: Number,
       value: 0,
     },
+    /** 高亮柱下标；-1 时按月模式可回退为「高于均值 1.2 倍」着色 */
+    highlightIndex: {
+      type: Number,
+      value: -1,
+    },
   },
 
   data: {
@@ -36,7 +41,7 @@ Component({
   },
 
   observers: {
-    'stats, avgWage'() {
+    'stats, avgWage, highlightIndex'() {
       if (this.properties.stats.length === 0) {
         return
       }
@@ -70,6 +75,7 @@ Component({
       if (!this._chart || !this.properties.stats.length) return
       const option = buildWageBarOption(this.properties.stats, {
         avgWage: this.properties.avgWage,
+        highlightIndex: this.properties.highlightIndex,
       })
       this._chart.setOption(option, true)
     },

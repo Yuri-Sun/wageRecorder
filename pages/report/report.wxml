@@ -49,9 +49,14 @@
       <view class="ui-section">
         <text class="ui-section-title">工资分布</text>
         <view class="ui-group report-chart-box">
-          <wage-chart stats="{{stats}}" avg-wage="{{overview.avgWage}}" />
+          <wage-chart
+            stats="{{stats}}"
+            avg-wage="{{overview.avgWage}}"
+            highlight-index="{{highlightIndex}}"
+          />
         </view>
-        <text class="ui-section-footnote">基于 ECharts，长按柱子可查看工时与条数</text>
+        <text class="ui-section-footnote" wx:if="{{viewMode === 'day' || viewMode === 'week'}}">深绿色柱为所选日期；长按可查看工时与条数</text>
+        <text class="ui-section-footnote" wx:else>深绿色柱为当前月份；长按可查看工时与条数</text>
       </view>
 
       <view class="ui-section">
@@ -64,7 +69,12 @@
               <text class="ui-table-col ui-table-col--num">条数</text>
               <text class="ui-table-col ui-table-col--wage">工资</text>
             </view>
-            <view class="ui-table-row" wx:for="{{stats}}" wx:key="keyId">
+            <view
+              class="ui-table-row {{rowIdx === highlightIndex ? 'report-table-row--highlight' : ''}}"
+              wx:for="{{stats}}"
+              wx:for-index="rowIdx"
+              wx:key="keyId"
+            >
               <text class="ui-table-col ui-table-col--period">{{item.date || item.month || item.label}}</text>
               <text class="ui-table-col ui-table-col--num">{{item.duration}}h</text>
               <text class="ui-table-col ui-table-col--num">{{item.count}}</text>

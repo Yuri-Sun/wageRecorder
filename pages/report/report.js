@@ -18,6 +18,7 @@ Page({
     periodLabel: '本月',
     showAllMonthsNote: false,
     emptyHint: '',
+    highlightIndex: -1,
     overview: { totalWage: 0, totalDuration: 0, totalCount: 0, avgWage: 0 },
     stats: [],
   },
@@ -45,6 +46,23 @@ Page({
   onAnchorDateChange(e) {
     this.setData({ anchorDate: e.detail.value })
     this.loadStats()
+  },
+
+  /**
+   * 图表/表格高亮下标：按天、按周 → 选中 anchorDate；按月 → 当前自然月（若有数据）
+   */
+  resolveHighlightIndex(stats, viewMode, anchorDate, today) {
+    if (!stats.length) return -1
+    if (viewMode === 'day' || viewMode === 'week') {
+      const idx = stats.findIndex(s => s.date === anchorDate)
+      return idx >= 0 ? idx : -1
+    }
+    if (viewMode === 'month') {
+      const currentMonth = today.substring(0, 7)
+      const idx = stats.findIndex(s => s.month === currentMonth)
+      return idx >= 0 ? idx : -1
+    }
+    return -1
   },
 
   loadWeekDailyStats(anchorDate, viewMode) {
@@ -118,6 +136,7 @@ Page({
       stats = this.formatStats(stats, s => s.month)
     }
 
+    const highlightIndex = this.resolveHighlightIndex(stats, viewMode, anchorDate, today)
     const totalWage = Math.round(stats.reduce((sum, s) => sum + s.wage, 0) * 100) / 100
     const totalDuration = Math.round(stats.reduce((sum, s) => sum + s.duration, 0) * 100) / 100
     const totalCount = stats.reduce((sum, s) => sum + s.count, 0)
@@ -126,6 +145,7 @@ Page({
 
     this.setData({
       stats,
+      highlightIndex,
       overview: { totalWage, totalDuration, totalCount, avgWage },
       emptyHint,
       showAllMonthsNote: viewMode === 'month' ? showAllMonthsNote : false,
