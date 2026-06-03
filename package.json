@@ -5,9 +5,11 @@
   "description": "微信小程序：工时记录与工资计算",
   "scripts": {
     "test": "node --test tests/*.test.js",
-    "lint": "eslint . --ext .js"
+    "lint": "eslint . --ext .js",
+    "build:echarts": "node scripts/build-echarts.mjs"
   },
   "devDependencies": {
+    "echarts": "^5.6.0",
     "eslint": "^8.57.1"
   }
 }

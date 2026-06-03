@@ -95,21 +95,24 @@
         <view class="record-form-col">
           <text class="record-form-label">上班</text>
           <picker mode="time" value="{{editForm.startTime}}" bindchange="onStartTimeChange">
-            <view class="record-form-picker text-nowrap">{{editForm.startTime}}</view>
+            <view class="record-form-picker text-nowrap {{editErrors.startTime ? 'record-form-picker--error' : ''}}">{{editForm.startTime || '请选择'}}</view>
           </picker>
+          <text class="record-form-error" wx:if="{{editErrors.startTime}}">{{editErrors.startTime}}</text>
         </view>
         <view class="record-form-col">
           <text class="record-form-label">下班</text>
           <picker mode="time" value="{{editForm.endTime}}" bindchange="onEndTimeChange">
-            <view class="record-form-picker text-nowrap">{{editForm.endTime}}</view>
+            <view class="record-form-picker text-nowrap {{editErrors.endTime ? 'record-form-picker--error' : ''}}">{{editForm.endTime || '请选择'}}</view>
           </picker>
+          <text class="record-form-error" wx:if="{{editErrors.endTime}}">{{editErrors.endTime}}</text>
         </view>
       </view>
       <view class="record-form-block">
         <text class="record-form-label">日期</text>
         <picker mode="date" value="{{editForm.date}}" bindchange="onEditDateChange">
-          <view class="record-form-picker text-nowrap">{{editForm.date}}</view>
+          <view class="record-form-picker text-nowrap {{editErrors.date ? 'record-form-picker--error' : ''}}">{{editForm.date || '请选择'}}</view>
         </picker>
+        <text class="record-form-error" wx:if="{{editErrors.date}}">{{editErrors.date}}</text>
       </view>
       <view class="record-form-block">
         <text class="record-form-label">备注</text>
@@ -121,6 +124,7 @@
         </view>
         <text class="meal-label text-nowrap">扣除午饭半小时</text>
       </view>
+      <text class="record-form-error record-form-error--block" wx:if="{{editErrors.form}}">{{editErrors.form}}</text>
       <view class="record-preview text-nowrap">
         <text>预览：{{editPreview.duration}}h · A${{editPreview.wage}}</text>
       </view>

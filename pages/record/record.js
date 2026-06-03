@@ -5,10 +5,14 @@ const {
   formatWeekRangeLabel,
   formatMonthPickerDisplay,
 } = require('../../utils/report-range.js')
+const { runPullDownRefresh } = require('../../utils/page-refresh.js')
+const { validateEditForm } = require('../../utils/record-form.js')
+
+const EMPTY_EDIT_ERRORS = { date: '', startTime: '', endTime: '', form: '' }
 
 Page({
   data: {
-    filterType: 'all', // 'all' | 'day' | 'week' | 'month'
+    filterType: 'all',
     filterDate: '',
     maxDate: '',
     weekRangeLabel: '',
@@ -18,10 +22,24 @@ Page({
     showEditModal: false,
     editingId: '',
     editForm: { date: '', startTime: '', endTime: '', note: '', deductMeal: false },
+    editErrors: { ...EMPTY_EDIT_ERRORS },
     editPreview: { duration: 0, wage: 0 },
   },
 
   onShow() {
+    this.refreshFromStorage()
+  },
+
+  onPullDownRefresh() {
+    runPullDownRefresh(() => this.refreshFromStorage())
+  },
+
+  onRecordsChanged() {
+    app.reloadRecordsFromStorage()
+    this.loadRecords()
+  },
+
+  refreshFromStorage() {
     app.reloadRecordsFromStorage()
     const today = app.getDateString()
     const filterDate = this.data.filterDate || today
@@ -31,11 +49,6 @@ Page({
       filterMonthDisplay: formatMonthPickerDisplay(filterDate),
     })
     this.updateRangeLabels()
-    this.loadRecords()
-  },
-
-  onRecordsChanged() {
-    app.reloadRecordsFromStorage()
     this.loadRecords()
   },
 
@@ -131,6 +144,7 @@ Page({
     this.setData({
       showEditModal: true,
       editingId: id,
+      editErrors: { ...EMPTY_EDIT_ERRORS },
       editForm: {
         date: record.date,
         startTime: record.startTime,
@@ -143,26 +157,39 @@ Page({
   },
 
   closeEditModal() {
-    this.setData({ showEditModal: false })
+    this.setData({ showEditModal: false, editErrors: { ...EMPTY_EDIT_ERRORS } })
   },
 
   stopPropagation() {},
 
+  clearEditError(field) {
+    if (!this.data.editErrors[field]) return
+    this.setData({ [`editErrors.${field}`]: '' })
+  },
+
   onStartTimeChange(e) {
+    this.clearEditError('startTime')
+    this.clearEditError('endTime')
+    this.clearEditError('form')
     this.setData({ 'editForm.startTime': e.detail.value })
     this.updateEditPreview()
   },
 
   onEndTimeChange(e) {
+    this.clearEditError('startTime')
+    this.clearEditError('endTime')
+    this.clearEditError('form')
     this.setData({ 'editForm.endTime': e.detail.value })
     this.updateEditPreview()
   },
 
   onEditDateChange(e) {
+    this.clearEditError('date')
     this.setData({ 'editForm.date': e.detail.value })
   },
 
   onNoteInput(e) {
+    this.clearEditError('form')
     this.setData({ 'editForm.note': e.detail.value })
   },
 
@@ -173,6 +200,10 @@ Page({
 
   updateEditPreview() {
     const { startTime, endTime, deductMeal } = this.data.editForm
+    if (!startTime || !endTime) {
+      this.setData({ editPreview: { duration: 0, wage: 0 } })
+      return
+    }
     let { duration, wage } = app.calcDurationAndWage(startTime, endTime)
     if (deductMeal) {
       duration = Math.max(0, Math.round((duration - 0.5) * 100) / 100)
@@ -182,18 +213,22 @@ Page({
   },
 
   saveEdit() {
-    const { date, startTime, endTime, note, deductMeal } = this.data.editForm
-    if (!startTime || !endTime) {
-      wx.showToast({ title: '请填写时间', icon: 'none' })
+    const { ok, errors } = validateEditForm(this.data.editForm)
+    if (!ok) {
+      this.setData({ editErrors: errors })
+      const tip = errors.date || errors.startTime || errors.endTime || errors.form
+      wx.showToast({ title: tip, icon: 'none' })
       return
     }
+
+    const { date, startTime, endTime, note, deductMeal } = this.data.editForm
     let { duration, wage } = app.calcDurationAndWage(startTime, endTime)
     if (deductMeal) {
       duration = Math.max(0, Math.round((duration - 0.5) * 100) / 100)
       wage = Math.round(duration * app.getHourlyRate() * 100) / 100
     }
     app.updateRecord(this.data.editingId, { date, startTime, endTime, note, duration, wage })
-    this.setData({ showEditModal: false })
+    this.setData({ showEditModal: false, editErrors: { ...EMPTY_EDIT_ERRORS } })
     this.loadRecords()
     wx.showToast({ title: '保存成功', icon: 'success' })
   },
