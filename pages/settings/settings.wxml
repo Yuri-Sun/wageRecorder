@@ -50,7 +50,7 @@
       <view class="export-options">
         <button class="btn-primary export-btn" bindtap="exportCSV">
           <text class="export-icon">📄</text>
-          导出 CSV
+          导出表格
         </button>
         <button class="btn-outline export-btn" bindtap="exportTXT">
           <text class="export-icon">📝</text>

@@ -158,12 +158,16 @@ Page({
       wx.showToast({ title: '请填写时间', icon: 'none' })
       return
     }
-    let { duration, wage } = app.calcDurationAndWage(startTime, endTime)
-    if (deductMeal) {
-      duration = Math.max(0, Math.round((duration - 0.5) * 100) / 100)
-      wage = Math.round(duration * app.getHourlyRate() * 100) / 100
-    }
-    app.updateRecord(this.data.editingId, { date, startTime, endTime, note, duration, wage })
+    const { duration, wage } = app.calcDurationAndWageWithMeal(startTime, endTime, deductMeal)
+    app.updateRecord(this.data.editingId, {
+      date,
+      startTime,
+      endTime,
+      note,
+      duration,
+      wage,
+      mealDeducted: deductMeal,
+    })
     this.setData({ showEditModal: false })
     this.loadRecords()
     wx.showToast({ title: '保存成功', icon: 'success' })

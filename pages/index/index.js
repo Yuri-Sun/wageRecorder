@@ -148,15 +148,9 @@ Page({
       return
     }
 
-    const record = app.addPunch(pendingPunch.date, pendingPunch.startTime, endTime)
-
-    // 扣除吃饭时间
-    if (this.data.deductMeal) {
-      const adjustedDuration = Math.max(0, record.duration - 0.5)
-      record.duration = Math.round(adjustedDuration * 100) / 100
-      record.wage = Math.round(adjustedDuration * app.getHourlyRate() * 100) / 100
-      app.updateRecord(record.id, { duration: record.duration, wage: record.wage })
-    }
+    const record = app.addPunch(pendingPunch.date, pendingPunch.startTime, endTime, '', {
+      deductMeal: this.data.deductMeal,
+    })
 
     // 清除待完成状态
     wx.removeStorageSync('pendingPunch')

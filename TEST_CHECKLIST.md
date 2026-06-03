@@ -1,30 +1,36 @@
-# Mini Regression Checklist
+# 手工回归清单
 
-## 1. Punch Flow
-1. Open home page, verify initial state is `off` when no pending punch exists.
-2. Tap punch in once, verify state becomes `on`, start time is shown.
-3. Tap punch in again while `on`, verify no overwrite and toast warns "已在上班中".
-4. Tap punch out, verify a new record is created and pending state is cleared.
+## 1. 打卡流程
+1. 打开首页，无待打卡时初始状态为 `off`。
+2. 点击上班打卡一次，状态变为 `on`，显示上班时间。
+3. 在 `on` 状态下再次点击上班，不应覆盖时间，并提示「已在上班中」。
+4. 点击下班打卡，应生成新记录并清除待打卡状态。
 
-## 2. Meal Deduction Consistency
-1. Create a record from home with meal deduction enabled.
-2. Verify saved record duration is reduced by `0.5h` and wage matches reduced duration.
-3. Edit the same record in record page, change time and enable meal deduction.
-4. Save and verify final duration/wage still keep deduction (not overwritten by recalculation).
+## 2. 午饭扣减一致性
+1. 在首页开启「扣除午饭半小时」后下班，保存的记录工时应减少 `0.5` 小时，工资与扣减后工时一致。
+2. 在记录页编辑同一条记录，修改时间并勾选扣饭，保存后工时/工资仍保持扣减（不被仅用时间重算覆盖）。
+3. 修改时薪后，已勾选扣饭的历史记录工资仍按扣饭规则重算。
 
-## 3. Settings Hourly Rate Input
-1. Open settings page, verify input displays current hourly rate.
-2. Type a different value, verify `保存时薪` button appears.
-3. Save, verify hourly rate updates and total wage recalculates.
-4. Reopen settings page, verify the new rate persists.
+## 3. 设置页时薪输入
+1. 打开设置页，输入框显示当前时薪。
+2. 输入不同数值，出现「保存时薪」按钮。
+3. 保存后时薪更新，总工资重算。
+4. 再次打开设置页，新时薪已持久化。
 
-## 4. Report Fallback Range
-1. Ensure current month has no records but historical records exist.
-2. Open report month mode.
-3. Verify fallback label shows "全部月份".
-4. Verify stats include all historical months (no missing early/late month due to list order).
+## 4. 报表回退范围
+1. 确保当月无记录但历史月份有记录。
+2. 打开报表「月」视图。
+3. 周期标签显示「全部月份」。
+4. 统计数据包含全部历史月份（不因列表顺序漏掉首尾月份）。
 
-## 5. Smoke Checks
-1. Switch tabs across home/record/report/settings, verify no crash.
-2. In record page, filter by day/week/month/all, verify counts and totals change correctly.
-3. Export CSV/TXT from settings with records present, verify export or clipboard fallback works.
+## 5. 冒烟检查
+1. 在首页/记录/报表/设置四个 Tab 间切换，无崩溃。
+2. 记录页按日/周/月/全部筛选，条数与合计正确变化。
+3. 设置页在有记录时导出表格/文本，导出成功或降级到剪贴板。
+
+## 6. 自动化（开发机）
+```bash
+npm install
+npm test
+npm run lint
+```

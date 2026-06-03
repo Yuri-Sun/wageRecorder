@@ -4,7 +4,7 @@ const app = getApp()
 Page({
   data: {
     viewMode: 'month', // 'day' | 'week' | 'month'
-    periodLabel: '±¾ÔÂ',
+    periodLabel: 'æœ¬æœˆ',
     overview: { totalWage: 0, totalDuration: 0, totalCount: 0, avgWage: 0 },
     stats: [],
     chartHeight: 300
@@ -16,7 +16,7 @@ Page({
 
   switchMode(e) {
     const mode = e.currentTarget.dataset.mode
-    const labels = { day: '½ñÈÕ', week: '±¾ÖÜ', month: '±¾ÔÂ' }
+    const labels = { day: 'ä»Šæ—¥', week: 'æœ¬å‘¨', month: 'æœ¬æœˆ' }
     this.setData({ viewMode: mode, periodLabel: labels[mode] })
     this.loadStats()
   },
@@ -32,16 +32,16 @@ Page({
       startDate = today
       endDate = today
       stats = app.getDailyStats(startDate, endDate)
-      // Èç¹ûµ±ÌìÃ»ÓÐÊý¾Ý£¬ÏÔÊ¾×î½ü7Ìì
+      // å¦‚æžœå½“å¤©æ²¡æœ‰æ•°æ®ï¼Œæ˜¾ç¤ºæœ€è¿‘7å¤©
       if (stats.length === 0) {
         const weekAgo = new Date(now)
         weekAgo.setDate(now.getDate() - 6)
         startDate = app.getDateString(weekAgo)
         endDate = today
         stats = app.getDailyStats(startDate, endDate)
-        this.setData({ periodLabel: '½ü7Ìì' })
+        this.setData({ periodLabel: 'è¿‘7å¤©' })
       } else {
-        this.setData({ periodLabel: '½ñÈÕ' })
+        this.setData({ periodLabel: 'ä»Šæ—¥' })
       }
     } else if (this.data.viewMode === 'week') {
       const dayOfWeek = now.getDay()
@@ -51,12 +51,12 @@ Page({
       startDate = app.getDateString(weekStart)
       endDate = today
       stats = app.getWeeklyStats(startDate, endDate)
-      this.setData({ periodLabel: '±¾ÖÜ' })
+      this.setData({ periodLabel: 'æœ¬å‘¨' })
     } else {
       startDate = today.substring(0, 7) + '-01'
       endDate = today
       stats = app.getMonthlyStats(startDate, endDate)
-      // Èç¹ûµ±ÔÂÎÞÊý¾Ý£¬ÏÔÊ¾ËùÓÐÔÂ·Ý
+      // å¦‚æžœå½“æœˆæ— æ•°æ®ï¼Œæ˜¾ç¤ºæ‰€æœ‰æœˆä»½
       if (stats.length === 0) {
         const allRecords = app.getRecords()
         if (allRecords.length > 0) {
@@ -65,13 +65,13 @@ Page({
           endDate = dates[dates.length - 1]
           stats = app.getMonthlyStats(startDate, endDate)
         }
-        this.setData({ periodLabel: 'È«²¿ÔÂ·Ý' })
+        this.setData({ periodLabel: 'å…¨éƒ¨æœˆä»½' })
       } else {
-        this.setData({ periodLabel: '±¾ÔÂ' })
+        this.setData({ periodLabel: 'æœ¬æœˆ' })
       }
     }
 
-    // ¸ñÊ½»¯±êÇ©
+    // æ ¼å¼åŒ–æ ‡ç­¾
     const mode = this.data.viewMode
     stats = stats.map(s => {
       let label = ''
@@ -87,13 +87,13 @@ Page({
       return { ...s, label }
     })
 
-    // ¼ÆËã×ÜÀÀ
+    // è®¡ç®—æ€»è§ˆ
     const totalWage = Math.round(stats.reduce((sum, s) => sum + s.wage, 0) * 100) / 100
     const totalDuration = Math.round(stats.reduce((sum, s) => sum + s.duration, 0) * 100) / 100
     const totalCount = stats.reduce((sum, s) => sum + s.count, 0)
     const avgWage = stats.length > 0 ? Math.round((totalWage / stats.length) * 100) / 100 : 0
 
-    // ¼ÆËãÖù×´Í¼¸ß¶È
+    // è®¡ç®—æŸ±çŠ¶å›¾é«˜åº¦
     const maxWage = stats.length > 0 ? Math.max(...stats.map(s => s.wage)) : 1
     const barMaxHeight = 200
     stats = stats.map(s => ({
