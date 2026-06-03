@@ -14,23 +14,23 @@
     <view class="card stats-card">
       <view class="flex-between" style="margin-bottom: 32rpx;">
         <view class="stat-item">
-          <view class="stat-label">今日工时</view>
-          <view class="stat-value">{{todayWork.duration}} <text class="stat-unit">小时</text></view>
+          <view class="stat-label text-nowrap">今日工时</view>
+          <view class="stat-value text-nowrap">{{todayWork.duration}}<text class="stat-unit">小时</text></view>
         </view>
         <view class="stat-divider"></view>
         <view class="stat-item">
-          <view class="stat-label">今日预估工资</view>
-          <view class="stat-value text-green">A${{todayWork.wage}}</view>
+          <view class="stat-label text-nowrap">今日预估工资</view>
+          <view class="stat-value text-green text-nowrap">A${{todayWork.wage}}</view>
         </view>
       </view>
       <view class="flex-between">
         <view class="stat-item">
-          <view class="stat-label">时薪</view>
-          <view class="stat-value-small text-orange">A${{hourlyRate}}/小时</view>
+          <view class="stat-label text-nowrap">时薪</view>
+          <view class="stat-value-small text-orange text-nowrap">A${{hourlyRate}}/小时</view>
         </view>
         <view class="stat-item">
-          <view class="stat-label">今日打卡次数</view>
-          <view class="stat-value-small">{{todayPunchCount}}</view>
+          <view class="stat-label text-nowrap">今日打卡次数</view>
+          <view class="stat-value-small text-nowrap">{{todayPunchCount}}</view>
         </view>
       </view>
     </view>
@@ -45,7 +45,7 @@
         <view class="live-duration">
           <view class="live-duration-label">当前预估工资</view>
           <view class="live-duration-value">
-            <text class="live-duration-num">A${{liveWage}}</text>
+            <text class="live-duration-num text-nowrap">A${{liveWage}}</text>
           </view>
           <view class="live-wage">{{liveDuration}} 小时</view>
         </view>
@@ -53,7 +53,7 @@
           <view class="meal-checkbox {{deductMeal ? 'checked' : ''}}">
             <text wx:if="{{deductMeal}}">√</text>
           </view>
-          <text class="meal-label">扣除午饭半小时</text>
+          <text class="meal-label text-nowrap">扣除午饭半小时</text>
         </view>
       </view>
       <view class="punch-status" wx:else>
@@ -82,12 +82,12 @@
       </view>
       <block wx:if="{{recentRecords.length > 0}}">
         <view class="recent-item" wx:for="{{recentRecords}}" wx:key="id">
-          <view class="flex-between">
-            <view>
-              <text class="recent-date">{{item.date}}</text>
-              <text class="recent-time">{{item.startTime}} - {{item.endTime}}</text>
+          <view class="recent-item-row">
+            <view class="recent-meta">
+              <text class="recent-date text-nowrap">{{item.date}}</text>
+              <text class="recent-time text-nowrap">{{item.startTime}} - {{item.endTime}}</text>
             </view>
-            <view class="recent-wage">A${{item.wage}}</view>
+            <text class="recent-wage text-nowrap flex-shrink-0">A${{item.wage}}</text>
           </view>
         </view>
       </block>

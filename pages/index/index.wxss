@@ -168,6 +168,7 @@ page {
 .meal-label {
   font-size: 26rpx;
   color: #666666;
+  white-space: nowrap;
 }
 
 .punch-buttons {

@@ -106,8 +106,18 @@ page {
 
 /* 详细列表 */
 .stat-list-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
   padding: 20rpx 0;
   border-bottom: 1rpx solid #F5F5F5;
+}
+
+.stat-list-main {
+  flex: 1;
+  min-width: 0;
 }
 
 .stat-list-item:last-child {

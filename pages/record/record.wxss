@@ -15,8 +15,34 @@ page {
   margin-bottom: 16rpx;
 }
 
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
 .record-card {
   padding: 24rpx 32rpx;
+}
+
+.record-card-top {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20rpx;
+  margin-bottom: 16rpx;
+}
+
+.record-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8rpx;
+  flex: 1;
+  min-width: 0;
 }
 
 .record-date {
@@ -25,21 +51,49 @@ page {
   color: #333333;
 }
 
-.record-edit {
+.record-time {
   font-size: 24rpx;
   color: #10AEFF;
-  padding: 4rpx 8rpx;
+  padding: 4rpx 12rpx;
+  background: rgba(16, 174, 255, 0.1);
+  border-radius: 8rpx;
+}
+
+.record-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 24rpx;
+}
+
+.record-edit {
+  font-size: 26rpx;
+  color: #10AEFF;
+  padding: 8rpx 0;
 }
 
 .record-delete {
-  font-size: 24rpx;
+  font-size: 26rpx;
   color: #FA5151;
-  padding: 4rpx 8rpx;
+  padding: 8rpx 0;
 }
 
-.record-detail {
+.record-card-bottom {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12rpx 32rpx;
+}
+
+.record-metric {
   font-size: 26rpx;
   color: #666666;
+}
+
+.metric-value {
+  font-weight: 600;
 }
 
 .record-note {
@@ -49,6 +103,18 @@ page {
   padding: 8rpx 16rpx;
   background: #F9F9F9;
   border-radius: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.edit-preview-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8rpx 24rpx;
+  margin-top: 16rpx;
 }
 
 /* 吃饭扣除勾选 */
@@ -69,6 +135,7 @@ page {
   justify-content: center;
   font-size: 24rpx;
   color: #FFFFFF;
+  flex-shrink: 0;
 }
 
 .meal-checkbox.checked {

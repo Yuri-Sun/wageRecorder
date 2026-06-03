@@ -13,20 +13,20 @@
 
     <!-- 总览卡片 -->
     <view class="card overview-card">
-      <view class="overview-title">{{periodLabel}} 工资总览</view>
-      <view class="overview-amount">A${{overview.totalWage}}</view>
-      <view class="flex-row" style="gap: 48rpx; margin-top: 24rpx;">
-        <view>
-          <text class="text-small text-gray">总工时</text>
-          <text class="overview-sub">{{overview.totalDuration}} 小时</text>
+      <view class="overview-title text-nowrap">{{periodLabel}} 工资总览</view>
+      <view class="overview-amount text-nowrap">A${{overview.totalWage}}</view>
+      <view class="overview-metrics">
+        <view class="overview-metric">
+          <text class="text-small text-gray text-nowrap">总工时</text>
+          <text class="overview-sub text-nowrap">{{overview.totalDuration}} 小时</text>
         </view>
-        <view>
-          <text class="text-small text-gray">记录数</text>
-          <text class="overview-sub">{{overview.totalCount}} 条</text>
+        <view class="overview-metric">
+          <text class="text-small text-gray text-nowrap">记录数</text>
+          <text class="overview-sub text-nowrap">{{overview.totalCount}} 条</text>
         </view>
-        <view>
-          <text class="text-small text-gray">日均工资</text>
-          <text class="overview-sub">A${{overview.avgWage}}</text>
+        <view class="overview-metric">
+          <text class="text-small text-gray text-nowrap">日均工资</text>
+          <text class="overview-sub text-nowrap">A${{overview.avgWage}}</text>
         </view>
       </view>
     </view>
@@ -39,7 +39,7 @@
           <view class="bar-group" wx:for="{{stats}}" wx:key="*this" style="height: {{chartHeight}}rpx;">
             <view class="bar" style="height: {{item.barHeight}}rpx; background: {{item.wage >= overview.avgWage * 1.2 ? '#07C160' : '#91E0B6'}};"></view>
             <text class="bar-label">{{item.label}}</text>
-            <text class="bar-value">A${{item.wage}}</text>
+            <text class="bar-value text-nowrap">A${{item.wage}}</text>
           </view>
         </view>
       </scroll-view>
@@ -48,7 +48,7 @@
           <view class="bar-group" wx:for="{{stats}}" wx:key="*this" style="height: {{chartHeight}}rpx;">
             <view class="bar" style="height: {{item.barHeight}}rpx; background: {{item.wage >= overview.avgWage * 1.2 ? '#07C160' : '#91E0B6'}};"></view>
             <text class="bar-label">{{item.label}}</text>
-            <text class="bar-value">A${{item.wage}}</text>
+            <text class="bar-value text-nowrap">A${{item.wage}}</text>
           </view>
         </view>
       </view>
@@ -57,12 +57,12 @@
     <!-- 详细列表 -->
     <view class="card" wx:if="{{stats.length > 0}}">
       <view class="card-title">详细数据</view>
-      <view class="stat-list-item flex-between" wx:for="{{stats}}" wx:key="*this">
-        <view>
-          <text class="stat-list-label">{{item.label}}</text>
-          <text class="stat-list-detail text-small text-gray">{{item.duration}}h · {{item.count}}条记录</text>
+      <view class="stat-list-item" wx:for="{{stats}}" wx:key="*this">
+        <view class="stat-list-main">
+          <text class="stat-list-label text-nowrap">{{item.label}}</text>
+          <text class="stat-list-detail text-small text-gray text-nowrap">{{item.duration}}h · {{item.count}}条记录</text>
         </view>
-        <text class="stat-list-wage">A${{item.wage}}</text>
+        <text class="stat-list-wage text-nowrap flex-shrink-0">A${{item.wage}}</text>
       </view>
     </view>
 

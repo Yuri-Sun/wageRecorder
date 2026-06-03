@@ -6,13 +6,13 @@
     <!-- 时薪设置 -->
     <view class="card">
       <view class="card-title">时薪设置</view>
-      <view class="flex-between">
-        <view class="flex-row" style="gap: 8rpx;">
-          <text class="rate-label">每小时工资</text>
-          <text class="text-small text-gray">（澳元/小时）</text>
+      <view class="rate-setting-row">
+        <view class="rate-setting-info">
+          <text class="rate-label text-nowrap">每小时工资</text>
+          <text class="rate-unit text-nowrap">（澳元/小时）</text>
         </view>
-        <view class="flex-row rate-input-group">
-          <text class="rate-symbol">A$</text>
+        <view class="rate-input-group flex-shrink-0">
+          <text class="rate-symbol text-nowrap">A$</text>
           <input class="rate-input" type="digit" value="{{rateInputValue}}" bindinput="onRateInput" bindblur="onRateBlur" />
         </view>
       </view>
@@ -30,17 +30,17 @@
     <!-- 数据统计 -->
     <view class="card">
       <view class="card-title">数据概览</view>
-      <view class="flex-between" style="margin-bottom: 20rpx;">
-        <text class="text-small text-gray">总打卡记录</text>
-        <text class="stat-num">{{totalRecords}} 条</text>
+      <view class="settings-stat-row">
+        <text class="text-small text-gray text-nowrap">总打卡记录</text>
+        <text class="stat-num text-nowrap">{{totalRecords}} 条</text>
       </view>
-      <view class="flex-between" style="margin-bottom: 20rpx;">
-        <text class="text-small text-gray">总工时</text>
-        <text class="stat-num">{{totalDuration}} 小时</text>
+      <view class="settings-stat-row">
+        <text class="text-small text-gray text-nowrap">总工时</text>
+        <text class="stat-num text-nowrap">{{totalDuration}} 小时</text>
       </view>
-      <view class="flex-between">
-        <text class="text-small text-gray">总工资</text>
-        <text class="stat-num text-green">A${{totalWage}}</text>
+      <view class="settings-stat-row">
+        <text class="text-small text-gray text-nowrap">总工资</text>
+        <text class="stat-num text-green text-nowrap">A${{totalWage}}</text>
       </view>
     </view>
 
