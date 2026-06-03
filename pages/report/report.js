@@ -1,61 +1,86 @@
 // pages/report/report.js
 const app = getApp()
+const { getWeekRangeForAnchor, formatWeekRangeLabel } = require('../../utils/report-range.js')
 
 Page({
   data: {
-    viewMode: 'month', // 'day' | 'week' | 'month'
+    viewMode: 'month',
+    anchorDate: '',
+    maxDate: '',
+    weekRangeLabel: '',
     periodLabel: '本月',
+    chartHeight: 240,
     overview: { totalWage: 0, totalDuration: 0, totalCount: 0, avgWage: 0 },
     stats: [],
   },
 
+  onLoad() {
+    const today = app.getDateString()
+    this.setData({ anchorDate: today, maxDate: today })
+  },
+
   onShow() {
+    const today = app.getDateString()
+    if (!this.data.anchorDate) {
+      this.setData({ anchorDate: today, maxDate: today })
+    } else {
+      this.setData({ maxDate: today })
+    }
     this.loadStats()
   },
 
   switchMode(e) {
     const mode = e.currentTarget.dataset.mode
-    const labels = { day: '今日', week: '本周', month: '本月' }
-    this.setData({ viewMode: mode, periodLabel: labels[mode] })
+    this.setData({ viewMode: mode })
     this.loadStats()
   },
 
-  loadStats() {
-    const app = getApp()
-    const now = new Date()
-    const today = app.getDateString()
-    let stats = []
-    let startDate, endDate
+  onAnchorDateChange(e) {
+    this.setData({ anchorDate: e.detail.value })
+    this.loadStats()
+  },
 
-    if (this.data.viewMode === 'day') {
-      startDate = today
-      endDate = today
-      stats = app.getDailyStats(startDate, endDate)
-      // 如果当天没有数据，显示最近7天
-      if (stats.length === 0) {
-        const weekAgo = new Date(now)
-        weekAgo.setDate(now.getDate() - 6)
-        startDate = app.getDateString(weekAgo)
-        endDate = today
-        stats = app.getDailyStats(startDate, endDate)
-        this.setData({ periodLabel: '近7天' })
-      } else {
-        this.setData({ periodLabel: '今日' })
-      }
-    } else if (this.data.viewMode === 'week') {
-      const dayOfWeek = now.getDay()
-      const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek
-      const weekStart = new Date(now)
-      weekStart.setDate(now.getDate() + diff)
-      startDate = app.getDateString(weekStart)
-      endDate = today
-      stats = app.getWeeklyStats(startDate, endDate)
-      this.setData({ periodLabel: '本周' })
+  loadWeekDailyStats(anchorDate, viewMode) {
+    const { weekStart, weekEnd } = getWeekRangeForAnchor(anchorDate)
+    let stats = app.getDailyStats(weekStart, weekEnd)
+    stats = stats.sort((a, b) => a.date.localeCompare(b.date))
+
+    const weekLabel = formatWeekRangeLabel(weekStart, weekEnd)
+    const today = app.getDateString()
+    let periodLabel
+    if (viewMode === 'day') {
+      periodLabel = anchorDate === today ? `今日 (${weekLabel})` : `${anchorDate} (${weekLabel})`
     } else {
-      startDate = today.substring(0, 7) + '-01'
-      endDate = today
+      periodLabel = `本周 ${weekLabel}`
+    }
+
+    this.setData({ weekRangeLabel: weekLabel, periodLabel })
+    return stats
+  },
+
+  formatStatsWithChart(stats, labelFn) {
+    const maxWage = Math.max(...stats.map(s => s.wage), 0.01)
+    const barMax = this.data.chartHeight - 80
+
+    return stats.map(s => ({
+      ...s,
+      label: labelFn(s),
+      barHeight: Math.max(4, Math.round((s.wage / maxWage) * barMax)),
+    }))
+  },
+
+  loadStats() {
+    const today = app.getDateString()
+    const anchorDate = this.data.anchorDate || today
+    let stats = []
+
+    if (this.data.viewMode === 'day' || this.data.viewMode === 'week') {
+      stats = this.loadWeekDailyStats(anchorDate, this.data.viewMode)
+      stats = this.formatStatsWithChart(stats, s => s.date.substring(5))
+    } else {
+      let startDate = today.substring(0, 7) + '-01'
+      let endDate = today
       stats = app.getMonthlyStats(startDate, endDate)
-      // 如果当月无数据，显示所有月份
       if (stats.length === 0) {
         const allRecords = app.getRecords()
         if (allRecords.length > 0) {
@@ -68,25 +93,9 @@ Page({
       } else {
         this.setData({ periodLabel: '本月' })
       }
+      stats = this.formatStatsWithChart(stats, s => s.month)
     }
 
-    // 格式化标签
-    const mode = this.data.viewMode
-    stats = stats.map(s => {
-      let label = ''
-      if (mode === 'day') label = s.date.substring(5) // MM-DD
-      else if (mode === 'week') {
-        const parts = s.week.split(' ~ ')
-        if (parts.length === 2) {
-          label = parts[0].substring(5) + '~' + parts[1].substring(5) // 01-05~01-11
-        } else {
-          label = s.week.substring(0, 10)
-        }
-      } else label = s.month
-      return { ...s, label }
-    })
-
-    // 计算总览
     const totalWage = Math.round(stats.reduce((sum, s) => sum + s.wage, 0) * 100) / 100
     const totalDuration = Math.round(stats.reduce((sum, s) => sum + s.duration, 0) * 100) / 100
     const totalCount = stats.reduce((sum, s) => sum + s.count, 0)
@@ -96,5 +105,5 @@ Page({
       stats,
       overview: { totalWage, totalDuration, totalCount, avgWage },
     })
-  }
+  },
 })

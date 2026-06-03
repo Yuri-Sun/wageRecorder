@@ -1,74 +1,87 @@
 <!--pages/report/report.wxml-->
 <navigation-bar title="统计报表" back="{{false}}" color="black" background="#FFF"></navigation-bar>
 
-<view class="ui-segment-bar">
-  <view class="ui-segment-item {{viewMode === 'day' ? 'ui-segment-item--active' : ''}}" bindtap="switchMode" data-mode="day">按天</view>
-  <view class="ui-segment-item {{viewMode === 'week' ? 'ui-segment-item--active' : ''}}" bindtap="switchMode" data-mode="week">按周</view>
-  <view class="ui-segment-item {{viewMode === 'month' ? 'ui-segment-item--active' : ''}}" bindtap="switchMode" data-mode="month">按月</view>
+<!-- 时间维度切换 -->
+<view class="filter-bar">
+  <view class="filter-item {{viewMode === 'day' ? 'active' : ''}}" bindtap="switchMode" data-mode="day">按天</view>
+  <view class="filter-item {{viewMode === 'week' ? 'active' : ''}}" bindtap="switchMode" data-mode="week">按周</view>
+  <view class="filter-item {{viewMode === 'month' ? 'active' : ''}}" bindtap="switchMode" data-mode="month">按月</view>
 </view>
 
-<scroll-view class="report-scroll ui-scroll" scroll-y>
-  <view class="ui-page">
+<view class="date-bar" wx:if="{{viewMode === 'day' || viewMode === 'week'}}">
+  <picker mode="date" value="{{anchorDate}}" end="{{maxDate}}" bindchange="onAnchorDateChange">
+    <view class="date-picker-row">
+      <text class="date-picker-hint">{{viewMode === 'day' ? '查看日期' : '查看周（选任意一天）'}}</text>
+      <text class="date-picker-value">{{anchorDate}}</text>
+      <text class="date-picker-chevron">›</text>
+    </view>
+  </picker>
+  <text class="week-range-hint" wx:if="{{weekRangeLabel}}">当周 {{weekRangeLabel}}</text>
+</view>
 
-    <block wx:if="{{stats.length > 0}}">
-      <view class="ui-section">
-        <view class="ui-group ui-hero-card">
-          <text class="ui-hero-title text-nowrap">{{periodLabel}} · 工资总览</text>
-          <text class="ui-hero-amount text-nowrap">A${{overview.totalWage}}</text>
-          <view class="ui-hero-metrics">
-            <view class="ui-hero-metric">
-              <text class="ui-hero-metric-label">总工时</text>
-              <text class="ui-hero-metric-value text-nowrap">{{overview.totalDuration}}h</text>
-            </view>
-            <view class="ui-hero-metric">
-              <text class="ui-hero-metric-label">记录</text>
-              <text class="ui-hero-metric-value text-nowrap">{{overview.totalCount}}条</text>
-            </view>
-            <view class="ui-hero-metric">
-              <text class="ui-hero-metric-label">均值</text>
-              <text class="ui-hero-metric-value text-nowrap">A${{overview.avgWage}}</text>
-            </view>
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="page-container">
+
+    <!-- 总览卡片 -->
+    <view class="card overview-card">
+      <view class="overview-title">{{periodLabel}} 工资总览</view>
+      <view class="overview-amount">${{overview.totalWage}}</view>
+      <view class="flex-row" style="gap: 48rpx; margin-top: 24rpx;">
+        <view>
+          <text class="text-small text-gray">总工时</text>
+          <text class="overview-sub">{{overview.totalDuration}} 小时</text>
+        </view>
+        <view>
+          <text class="text-small text-gray">记录数</text>
+          <text class="overview-sub">{{overview.totalCount}} 条</text>
+        </view>
+        <view>
+          <text class="text-small text-gray">日均工资</text>
+          <text class="overview-sub">${{overview.avgWage}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 图表区域 - 简易柱状图 -->
+    <view class="card chart-card chart-{{viewMode}}" wx:if="{{stats.length > 0}}">
+      <view class="card-title">工资分布</view>
+      <scroll-view scroll-x class="chart-scroll" wx:if="{{viewMode === 'day' && stats.length <= 31}}">
+        <view class="chart-container">
+          <view class="bar-group" wx:for="{{stats}}" wx:key="*this" style="height: {{chartHeight}}rpx;">
+            <view class="bar" style="height: {{item.barHeight}}rpx; background: {{item.wage >= overview.avgWage * 1.2 ? '#07C160' : '#91E0B6'}};"></view>
+            <text class="bar-label">{{item.label}}</text>
+            <text class="bar-value">${{item.wage}}</text>
+          </view>
+        </view>
+      </scroll-view>
+      <view class="chart-scroll" wx:else>
+        <view class="chart-container">
+          <view class="bar-group" wx:for="{{stats}}" wx:key="*this" style="height: {{chartHeight}}rpx;">
+            <view class="bar" style="height: {{item.barHeight}}rpx; background: {{item.wage >= overview.avgWage * 1.2 ? '#07C160' : '#91E0B6'}};"></view>
+            <text class="bar-label">{{item.label}}</text>
+            <text class="bar-value">${{item.wage}}</text>
           </view>
         </view>
       </view>
+    </view>
 
-      <view class="ui-section">
-        <text class="ui-section-title">工资趋势</text>
-        <view class="ui-group report-chart-box">
-          <wage-chart stats="{{stats}}" avg-wage="{{overview.avgWage}}" />
+    <!-- 详细列表 -->
+    <view class="card" wx:if="{{stats.length > 0}}">
+      <view class="card-title">详细数据</view>
+      <view class="stat-list-item flex-between" wx:for="{{stats}}" wx:key="*this">
+        <view>
+          <text class="stat-list-label">{{item.label}}</text>
+          <text class="stat-list-detail text-small text-gray">{{item.duration}}h · {{item.count}}条记录</text>
         </view>
-        <text class="ui-section-footnote">基于 ECharts，点击柱子可查看详情</text>
+        <text class="stat-list-wage">${{item.wage}}</text>
       </view>
+    </view>
 
-      <view class="ui-section">
-        <text class="ui-section-title">工资明细表</text>
-        <view class="ui-group">
-          <view class="ui-table">
-            <view class="ui-table-head">
-              <text class="ui-table-col ui-table-col--period">周期</text>
-              <text class="ui-table-col ui-table-col--num">工时</text>
-              <text class="ui-table-col ui-table-col--num">条数</text>
-              <text class="ui-table-col ui-table-col--wage">工资</text>
-            </view>
-            <view class="ui-table-row" wx:for="{{stats}}" wx:key="label">
-              <text class="ui-table-col ui-table-col--period">{{item.label}}</text>
-              <text class="ui-table-col ui-table-col--num">{{item.duration}}h</text>
-              <text class="ui-table-col ui-table-col--num">{{item.count}}</text>
-              <text class="ui-table-col ui-table-col--wage">A${{item.wage}}</text>
-            </view>
-          </view>
-        </view>
-      </view>
-    </block>
-
-    <view class="ui-section" wx:else>
-      <view class="ui-group">
-        <view class="ui-empty">
-          <view class="ui-empty-icon">📊</view>
-          <text class="ui-empty-text">暂无统计数据</text>
-          <text class="ui-section-footnote" style="padding-top: 8rpx;">去首页打卡后自动生成报表</text>
-        </view>
-      </view>
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{stats.length === 0}}">
+      <view class="empty-icon">📊</view>
+      <view class="empty-text">暂无统计数据</view>
+      <view class="text-small text-gray" style="margin-top: 8rpx;">去首页开始打卡吧</view>
     </view>
 
   </view>
