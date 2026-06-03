@@ -2,6 +2,5 @@
   "usingComponents": {
     "navigation-bar": "/components/navigation-bar/navigation-bar",
     "wage-chart": "/components/wage-chart/wage-chart"
-  },
-  "navigationStyle": "custom"
+  }
 }

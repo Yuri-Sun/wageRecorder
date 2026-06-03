@@ -235,7 +235,7 @@ App({
       return text
     }
 
-    let csv = '日期,上班时间,下班时间,工时(小时),工资,备注\n'
+    let csv = '日期,上班时间,下班时间,工时(小时),工资(A$),备注\n'
     records.forEach(r => {
       csv += [
         escapeCsv(r.date),

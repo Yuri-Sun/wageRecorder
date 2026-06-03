@@ -1,196 +1,63 @@
 /**pages/report/report.wxss**/
+@import '../../styles/ui-kit.wxss';
+
 page {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #F5F5F5;
+  background: #ededed;
 }
 
-.scrollarea {
+.report-scroll {
   flex: 1;
   height: 0;
 }
 
-.date-bar {
-  background: #FFFFFF;
-  padding: 16rpx 32rpx 20rpx;
-  border-bottom: 1rpx solid #EEEEEE;
+.report-date-bar {
+  background: #fff;
+  padding: 16rpx 32rpx 12rpx;
+  border-bottom: 1rpx solid #e6e6e6;
   flex-shrink: 0;
 }
 
-.date-picker-row {
+.report-date-picker {
   display: flex;
   align-items: center;
   gap: 16rpx;
 }
 
-.date-picker-hint {
+.report-date-hint {
   font-size: 26rpx;
-  color: #888888;
+  color: #888;
   flex-shrink: 0;
 }
 
-.date-picker-value {
-  font-size: 30rpx;
-  color: #07C160;
-  font-weight: 600;
+.report-date-value {
   flex: 1;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #07c160;
 }
 
-.date-picker-chevron {
+.report-date-chevron {
   font-size: 36rpx;
-  color: #CCCCCC;
+  color: #ccc;
   line-height: 1;
 }
 
-.week-range-hint {
+.report-week-hint {
   display: block;
-  margin-top: 8rpx;
-  font-size: 24rpx;
-  color: #999999;
+  padding-top: 8rpx;
 }
 
-.overview-card {
-  background: linear-gradient(135deg, #07C160, #06AD56);
-  color: #FFFFFF;
-  padding: 40rpx 32rpx;
-  border-radius: 20rpx;
-  margin-bottom: 24rpx;
-}
-
-.overview-title {
-  font-size: 28rpx;
-  opacity: 0.85;
-  margin-bottom: 12rpx;
-}
-
-.overview-amount {
-  font-size: 64rpx;
-  font-weight: 700;
-  letter-spacing: 2rpx;
-}
-
-.overview-sub {
-  font-size: 28rpx;
-  font-weight: 500;
-  margin-left: 8rpx;
-}
-
-.chart-card {
-  padding: 32rpx 24rpx 24rpx;
-  margin-bottom: 24rpx;
-  overflow: hidden;
-}
-
-.chart-scroll {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.chart-container {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  min-height: 100%;
-  padding-top: 4rpx;
-  box-sizing: border-box;
-}
-
-.bar-group {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex-shrink: 0;
-  width: 100rpx;
-}
-
-.bar-plot {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
-.bar {
-  width: 48rpx;
-  border-radius: 8rpx 8rpx 0 0;
-  min-height: 4rpx;
-  flex-shrink: 0;
-}
-
-.bar-value {
-  font-size: 18rpx;
-  color: #666666;
-  font-weight: 500;
-  line-height: 1.2;
-  margin-bottom: 4rpx;
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-
-.bar-label {
-  font-size: 20rpx;
-  color: #999999;
-  margin-top: 8rpx;
-  line-height: 1.2;
-  flex-shrink: 0;
-  white-space: nowrap;
-  max-width: 100rpx;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.chart-week .bar-group {
-  width: 120rpx;
-}
-
-.chart-week .bar-label {
-  max-width: 120rpx;
-}
-
-.chart-month .bar-group {
-  width: 112rpx;
-}
-
-.chart-month .bar-label {
-  max-width: 112rpx;
-}
-
-.detail-card {
-  margin-bottom: 24rpx;
-}
-
-.stat-list-item {
-  padding: 20rpx 0;
-  border-bottom: 1rpx solid #F5F5F5;
-}
-
-.stat-list-item:last-child {
-  border-bottom: none;
-}
-
-.stat-list-label {
-  font-size: 28rpx;
-  color: #333333;
-  font-weight: 500;
-}
-
-.stat-list-detail {
+.report-month-note,
+.report-empty-hint {
   display: block;
-  margin-top: 4rpx;
+  padding: 16rpx 32rpx 0;
+  line-height: 1.5;
 }
 
-.stat-list-wage {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #07C160;
-  flex-shrink: 0;
-  margin-left: 16rpx;
-}
-
-.empty-hint {
-  margin-top: 8rpx;
+.report-chart-box {
+  padding: 8rpx 8rpx 0;
+  overflow: hidden;
 }

@@ -2,12 +2,12 @@
 const app = getApp()
 const { getWeekRangeForAnchor, formatWeekRangeLabel } = require('../../utils/report-range.js')
 
-/** 柱状图绘图区高度（仅柱体+柱顶金额） */
-const CHART_PLOT_HEIGHT = 200
-/** 柱体上方预留金额文字高度 */
-const CHART_VALUE_RESERVE = 36
-/** 柱体下方日期标签区域 */
-const CHART_LABEL_AREA = 48
+const EMPTY_HINTS = {
+  day: '当前所选日期所在周暂无打卡。请用上方日期切换其它周，或去首页打卡。',
+  week: '当前所选周暂无打卡。请用上方日期切换其它周，或去首页打卡。',
+  month: '本月暂无打卡。若其它月份有记录，将自动展示「全部月份」汇总；按天/按周可用上方日期选择器查看具体周。',
+  none: '暂无任何打卡记录，请先去首页打卡。',
+}
 
 Page({
   data: {
@@ -16,8 +16,8 @@ Page({
     maxDate: '',
     weekRangeLabel: '',
     periodLabel: '本月',
-    chartPlotHeight: CHART_PLOT_HEIGHT,
-    chartScrollHeight: CHART_PLOT_HEIGHT + CHART_LABEL_AREA,
+    showAllMonthsNote: false,
+    emptyHint: '',
     overview: { totalWage: 0, totalDuration: 0, totalCount: 0, avgWage: 0 },
     stats: [],
   },
@@ -38,8 +38,7 @@ Page({
   },
 
   switchMode(e) {
-    const mode = e.currentTarget.dataset.mode
-    this.setData({ viewMode: mode })
+    this.setData({ viewMode: e.currentTarget.dataset.mode })
     this.loadStats()
   },
 
@@ -62,60 +61,74 @@ Page({
       periodLabel = `本周 ${weekLabel}`
     }
 
-    this.setData({ weekRangeLabel: weekLabel, periodLabel })
+    this.setData({ weekRangeLabel: weekLabel, periodLabel, showAllMonthsNote: false })
     return stats
   },
 
-  formatStatsWithChart(stats, labelFn) {
-    const maxWage = Math.max(...stats.map(s => s.wage), 0.01)
-    const barMax = CHART_PLOT_HEIGHT - CHART_VALUE_RESERVE
-
+  formatStats(stats, labelFn) {
     return stats.map(s => {
       const label = labelFn(s)
       return {
         ...s,
         keyId: s.date || s.month || label,
         label,
-        barHeight: Math.max(4, Math.round((s.wage / maxWage) * barMax)),
       }
     })
+  },
+
+  resolveEmptyHint(viewMode, hasAnyRecords) {
+    if (!hasAnyRecords) return EMPTY_HINTS.none
+    if (viewMode === 'day') return EMPTY_HINTS.day
+    if (viewMode === 'week') return EMPTY_HINTS.week
+    return EMPTY_HINTS.month
   },
 
   loadStats() {
     const today = app.getDateString()
     const anchorDate = this.data.anchorDate || today
+    const viewMode = this.data.viewMode
+    const allRecords = app.getRecords()
+    const hasAnyRecords = allRecords.length > 0
     let stats = []
+    let showAllMonthsNote = false
+    let periodLabel = this.data.periodLabel
 
-    if (this.data.viewMode === 'day' || this.data.viewMode === 'week') {
-      stats = this.loadWeekDailyStats(anchorDate, this.data.viewMode)
-      stats = this.formatStatsWithChart(stats, s => s.date.substring(5))
+    if (viewMode === 'day' || viewMode === 'week') {
+      stats = this.loadWeekDailyStats(anchorDate, viewMode)
+      stats = this.formatStats(stats, s => s.date.substring(5))
     } else {
       let startDate = today.substring(0, 7) + '-01'
       let endDate = today
       stats = app.getMonthlyStats(startDate, endDate)
-      if (stats.length === 0) {
-        const allRecords = app.getRecords()
-        if (allRecords.length > 0) {
-          const dates = allRecords.map(r => r.date).sort()
-          startDate = dates[0]
-          endDate = dates[dates.length - 1]
-          stats = app.getMonthlyStats(startDate, endDate)
-        }
-        this.setData({ periodLabel: '全部月份' })
+      if (stats.length === 0 && hasAnyRecords) {
+        const dates = allRecords.map(r => r.date).sort()
+        startDate = dates[0]
+        endDate = dates[dates.length - 1]
+        stats = app.getMonthlyStats(startDate, endDate)
+        periodLabel = '全部月份'
+        showAllMonthsNote = true
+      } else if (stats.length > 0) {
+        periodLabel = '本月'
+        showAllMonthsNote = false
       } else {
-        this.setData({ periodLabel: '本月' })
+        periodLabel = '本月'
+        showAllMonthsNote = false
       }
-      stats = this.formatStatsWithChart(stats, s => s.month)
+      this.setData({ weekRangeLabel: '', periodLabel, showAllMonthsNote })
+      stats = this.formatStats(stats, s => s.month)
     }
 
     const totalWage = Math.round(stats.reduce((sum, s) => sum + s.wage, 0) * 100) / 100
     const totalDuration = Math.round(stats.reduce((sum, s) => sum + s.duration, 0) * 100) / 100
     const totalCount = stats.reduce((sum, s) => sum + s.count, 0)
     const avgWage = stats.length > 0 ? Math.round((totalWage / stats.length) * 100) / 100 : 0
+    const emptyHint = stats.length === 0 ? this.resolveEmptyHint(viewMode, hasAnyRecords) : ''
 
     this.setData({
       stats,
       overview: { totalWage, totalDuration, totalCount, avgWage },
+      emptyHint,
+      showAllMonthsNote: viewMode === 'month' ? showAllMonthsNote : false,
     })
   },
 })
