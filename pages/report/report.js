@@ -1,11 +1,17 @@
 // pages/report/report.js
 const app = getApp()
-const { getWeekRangeForAnchor, formatWeekRangeLabel } = require('../../utils/report-range.js')
+const {
+  getWeekRangeForAnchor,
+  formatWeekRangeLabel,
+  getMonthRangeForAnchor,
+  formatMonthLabel,
+  formatMonthPickerDisplay,
+} = require('../../utils/report-range.js')
 
 const EMPTY_HINTS = {
   day: '当前所选日期所在周暂无打卡。请用上方日期切换其它周，或去首页打卡。',
   week: '当前所选周暂无打卡。请用上方日期切换其它周，或去首页打卡。',
-  month: '本月暂无打卡。若其它月份有记录，将自动展示「全部月份」汇总；按天/按周可用上方日期选择器查看具体周。',
+  month: '所选月份暂无打卡。请用上方月份选择器切换其它月份，或去首页打卡。',
   none: '暂无任何打卡记录，请先去首页打卡。',
 }
 
@@ -15,6 +21,7 @@ Page({
     anchorDate: '',
     maxDate: '',
     weekRangeLabel: '',
+    anchorMonthDisplay: '',
     periodLabel: '本月',
     showAllMonthsNote: false,
     emptyHint: '',
@@ -26,22 +33,20 @@ Page({
 
   onLoad() {
     const today = app.getDateString()
-    this.setData({ anchorDate: today, maxDate: today })
+    this.setData({ anchorDate: today, maxDate: today, anchorMonthDisplay: formatMonthPickerDisplay(today) })
   },
 
   onShow() {
     app.reloadRecordsFromStorage()
     const today = app.getDateString()
     if (!this.data.anchorDate) {
-      this.setData({ anchorDate: today, maxDate: today })
+      this.setData({ anchorDate: today, maxDate: today, anchorMonthDisplay: formatMonthPickerDisplay(today) })
     } else {
       this.setData({ maxDate: today })
     }
     this.loadStats()
   },
 
-
-  /** 记录变更时若报表页在页面栈内则立即刷新 */
   onRecordsChanged() {
     app.reloadRecordsFromStorage()
     this.loadStats()
@@ -53,13 +58,14 @@ Page({
   },
 
   onAnchorDateChange(e) {
-    this.setData({ anchorDate: e.detail.value })
+    const value = e.detail.value
+    this.setData({
+      anchorDate: value,
+      anchorMonthDisplay: formatMonthPickerDisplay(value),
+    })
     this.loadStats()
   },
 
-  /**
-   * 图表/表格高亮下标：按天、按周 → 选中 anchorDate；按月 → 当前自然月（若有数据）
-   */
   resolveHighlightIndex(stats, viewMode, anchorDate, today) {
     if (!stats.length) return -1
     if (viewMode === 'day' || viewMode === 'week') {
@@ -67,8 +73,9 @@ Page({
       return idx >= 0 ? idx : -1
     }
     if (viewMode === 'month') {
-      const currentMonth = today.substring(0, 7)
-      const idx = stats.findIndex(s => s.month === currentMonth)
+      const anchorMonth = anchorDate.substring(0, 7)
+      if (!today.startsWith(anchorMonth)) return -1
+      const idx = stats.findIndex(s => s.date === today)
       return idx >= 0 ? idx : -1
     }
     return -1
@@ -89,6 +96,27 @@ Page({
     }
 
     this.setData({ weekRangeLabel: weekLabel, periodLabel, showAllMonthsNote: false })
+    return stats
+  },
+
+  loadMonthDailyStats(anchorDate, today) {
+    const anchorMonth = anchorDate.substring(0, 7)
+    const { monthStart, monthEnd: monthEndRaw } = getMonthRangeForAnchor(anchorMonth)
+    let monthEnd = monthEndRaw
+    if (anchorMonth === today.substring(0, 7) && monthEnd > today) {
+      monthEnd = today
+    }
+
+    let stats = app.getDailyStats(monthStart, monthEnd)
+    stats = stats.sort((a, b) => a.date.localeCompare(b.date))
+    const periodLabel = `${formatMonthLabel(anchorMonth, today)} (${monthStart.substring(5)} ~ ${monthEnd.substring(5)})`
+
+    this.setData({
+      weekRangeLabel: '',
+      periodLabel,
+      showAllMonthsNote: false,
+      anchorMonthDisplay: formatMonthPickerDisplay(anchorDate),
+    })
     return stats
   },
 
@@ -117,32 +145,13 @@ Page({
     const allRecords = app.getRecords()
     const hasAnyRecords = allRecords.length > 0
     let stats = []
-    let showAllMonthsNote = false
-    let periodLabel = this.data.periodLabel
 
     if (viewMode === 'day' || viewMode === 'week') {
       stats = this.loadWeekDailyStats(anchorDate, viewMode)
       stats = this.formatStats(stats, s => s.date.substring(5))
     } else {
-      let startDate = today.substring(0, 7) + '-01'
-      let endDate = today
-      stats = app.getMonthlyStats(startDate, endDate)
-      if (stats.length === 0 && hasAnyRecords) {
-        const dates = allRecords.map(r => r.date).sort()
-        startDate = dates[0]
-        endDate = dates[dates.length - 1]
-        stats = app.getMonthlyStats(startDate, endDate)
-        periodLabel = '全部月份'
-        showAllMonthsNote = true
-      } else if (stats.length > 0) {
-        periodLabel = '本月'
-        showAllMonthsNote = false
-      } else {
-        periodLabel = '本月'
-        showAllMonthsNote = false
-      }
-      this.setData({ weekRangeLabel: '', periodLabel, showAllMonthsNote })
-      stats = this.formatStats(stats, s => s.month)
+      stats = this.loadMonthDailyStats(anchorDate, today)
+      stats = this.formatStats(stats, s => s.date.substring(5))
     }
 
     const highlightIndex = this.resolveHighlightIndex(stats, viewMode, anchorDate, today)
@@ -158,7 +167,7 @@ Page({
       highlightIndex,
       overview: { totalWage, totalDuration, totalCount, avgWage },
       emptyHint,
-      showAllMonthsNote: viewMode === 'month' ? showAllMonthsNote : false,
+      showAllMonthsNote: false,
     })
   },
 })

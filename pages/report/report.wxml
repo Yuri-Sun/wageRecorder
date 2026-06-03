@@ -7,15 +7,21 @@
   <view class="ui-segment-item {{viewMode === 'month' ? 'ui-segment-item--active' : ''}}" bindtap="switchMode" data-mode="month">按月</view>
 </view>
 
-<view class="report-date-bar" wx:if="{{viewMode === 'day' || viewMode === 'week'}}">
-  <picker mode="date" value="{{anchorDate}}" end="{{maxDate}}" bindchange="onAnchorDateChange">
+<view class="report-date-bar" wx:if="{{viewMode === 'day' || viewMode === 'week' || viewMode === 'month'}}">
+  <picker
+    mode="date"
+    fields="{{viewMode === 'month' ? 'month' : 'day'}}"
+    value="{{anchorDate}}"
+    end="{{maxDate}}"
+    bindchange="onAnchorDateChange"
+  >
     <view class="report-date-picker">
-      <text class="report-date-hint">{{viewMode === 'day' ? '查看日期' : '查看周（选周内任意一天）'}}</text>
-      <text class="report-date-value text-nowrap">{{anchorDate}}</text>
+      <text class="report-date-hint">{{viewMode === 'day' ? '查看日期' : (viewMode === 'week' ? '查看周（选周内任意一天）' : '查看月份')}}</text>
+      <text class="report-date-value text-nowrap">{{viewMode === 'month' ? anchorMonthDisplay : anchorDate}}</text>
       <text class="report-date-chevron">›</text>
     </view>
   </picker>
-  <text class="ui-section-footnote report-week-hint" wx:if="{{weekRangeLabel}}">当周 {{weekRangeLabel}}</text>
+  <text class="ui-section-footnote report-week-hint" wx:if="{{viewMode !== 'month' && weekRangeLabel}}">当周 {{weekRangeLabel}}</text>
 </view>
 
 <scroll-view class="report-scroll ui-scroll" scroll-y>
@@ -36,14 +42,11 @@
               <text class="ui-hero-metric-value text-nowrap">{{overview.totalCount}}条</text>
             </view>
             <view class="ui-hero-metric">
-              <text class="ui-hero-metric-label">{{viewMode === 'month' ? '月均' : '日均'}}</text>
+              <text class="ui-hero-metric-label">日均</text>
               <text class="ui-hero-metric-value text-nowrap">A${{overview.avgWage}}</text>
             </view>
           </view>
         </view>
-        <text class="ui-section-footnote report-month-note" wx:if="{{showAllMonthsNote}}">
-          本月无打卡记录，已自动展示全部有数据的月份（仅含已有记录的月份，非完整日历月补全）。
-        </text>
       </view>
 
       <view class="ui-section">
@@ -57,7 +60,7 @@
           />
         </view>
         <text class="ui-section-footnote" wx:if="{{viewMode === 'day' || viewMode === 'week'}}">深绿色柱为所选日期；长按可查看工时与条数</text>
-        <text class="ui-section-footnote" wx:else>深绿色柱为当前月份；长按可查看工时与条数</text>
+        <text class="ui-section-footnote" wx:else>深绿色柱为今日（仅当选中本月且今日有打卡）；长按可查看工时与条数</text>
       </view>
 
       <view class="ui-section">
