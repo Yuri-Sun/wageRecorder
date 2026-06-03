@@ -1,93 +1,270 @@
 /**pages/settings/settings.wxss**/
+/* 参考微信设计指南 + WeUI Cells：分组标题 + 白底列表组 */
+
 page {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #F5F5F5;
+  background: #ededed;
 }
 
-.scrollarea {
+.settings-scroll {
   flex: 1;
+  height: 0;
 }
 
-/* 时薪设置 */
-.rate-label {
-  font-size: 28rpx;
-  color: #333333;
+.settings-page {
+  padding: 24rpx 24rpx 48rpx;
+  box-sizing: border-box;
+}
+
+/* 分区标题（组外，浅灰底上） */
+.settings-section {
+  margin-bottom: 32rpx;
+}
+
+.settings-section-title {
+  display: block;
+  padding: 0 16rpx 12rpx;
+  font-size: 26rpx;
+  color: #888888;
   font-weight: 500;
 }
 
-.rate-input-group {
-  background: #F5F5F5;
-  border-radius: 12rpx;
-  padding: 12rpx 20rpx;
-}
-
-.rate-symbol {
-  font-size: 28rpx;
-  color: #07C160;
-  font-weight: 600;
-  margin-right: 8rpx;
-}
-
-.rate-input {
-  width: 120rpx;
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #333333;
-  text-align: right;
-}
-
-.rate-hint {
-  margin-top: 16rpx;
-  padding: 12rpx 16rpx;
-  background: rgba(255, 149, 0, 0.06);
-  border-radius: 8rpx;
+.settings-section-footnote {
+  display: block;
+  padding: 12rpx 16rpx 0;
   font-size: 24rpx;
+  color: #b2b2b2;
+  line-height: 1.5;
 }
 
-.rate-preview {
-  margin-top: 12rpx;
+.settings-section--danger {
+  margin-top: 16rpx;
+}
+
+/* 白底圆角分组（类似 WeUI cells） */
+.settings-group {
+  background: #ffffff;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.settings-group-footer {
+  padding: 20rpx 32rpx 28rpx;
+  border-top: 1rpx solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16rpx;
+}
+
+.settings-tip {
+  font-size: 24rpx;
+  line-height: 1.5;
   text-align: center;
 }
 
-.stat-num {
-  font-size: 28rpx;
+.settings-tip--warn {
+  color: #ff9500;
+}
+
+.settings-inline-btn {
+  height: 80rpx;
+  line-height: 80rpx;
+  background: linear-gradient(135deg, #07c160, #06ad56);
+  color: #ffffff;
+  font-size: 30rpx;
   font-weight: 600;
-  color: #333333;
+  border-radius: 12rpx;
+  border: none;
+  padding: 0;
 }
 
-/* 导出 */
-.export-options {
+.settings-inline-btn::after {
+  border: none;
+}
+
+/* 列表行 */
+.settings-cell {
   display: flex;
-  gap: 24rpx;
-  margin-bottom: 16rpx;
+  flex-direction: row;
+  align-items: center;
+  min-height: 112rpx;
+  padding: 24rpx 32rpx;
+  box-sizing: border-box;
+  border-bottom: 1rpx solid #f0f0f0;
 }
 
-.export-btn {
+.settings-cell--last,
+.settings-cell--form {
+  border-bottom: none;
+}
+
+.settings-cell--form {
+  align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
+}
+
+.settings-cell__body {
   flex: 1;
   min-width: 0;
-  height: 88rpx;
-  font-size: 28rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6rpx;
+}
+
+.settings-cell__body--flex {
+  flex: 1;
+}
+
+.settings-cell__title {
+  font-size: 32rpx;
+  color: #191919;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.settings-cell__desc {
+  font-size: 24rpx;
+  color: #999999;
+  line-height: 1.4;
+}
+
+.settings-cell__icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 12rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8rpx;
-  white-space: nowrap;
-  padding: 0 16rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #ffffff;
+  flex-shrink: 0;
+  margin-right: 24rpx;
 }
 
-.export-icon {
+.settings-cell__icon--green {
+  background: linear-gradient(135deg, #07c160, #06ad56);
+}
+
+.settings-cell__icon--blue {
+  background: linear-gradient(135deg, #10aeff, #0e9de6);
+}
+
+.settings-cell__chevron {
+  font-size: 36rpx;
+  color: #c7c7cc;
+  font-weight: 300;
+  flex-shrink: 0;
+  margin-left: 8rpx;
+  line-height: 1;
+}
+
+.settings-cell--link:active {
+  background: #f7f7f7;
+}
+
+/* 时薪输入 */
+.settings-rate-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+  background: #f7f7f7;
+  border-radius: 12rpx;
+  padding: 16rpx 24rpx;
+  min-width: 200rpx;
+}
+
+.settings-rate-currency {
   font-size: 32rpx;
+  font-weight: 600;
+  color: #07c160;
+  margin-right: 8rpx;
 }
 
-.export-tip {
-  text-align: center;
-  line-height: 1.6;
+.settings-rate-input {
+  flex: 1;
+  min-width: 80rpx;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #191919;
+  text-align: right;
+  height: 48rpx;
 }
 
-/* 版本 */
-.version-info {
+/* 三列数据概览 */
+.settings-stats-grid {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  padding: 32rpx 16rpx;
+}
+
+.settings-stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  position: relative;
+}
+
+.settings-stat-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 12rpx;
+  bottom: 12rpx;
+  width: 1rpx;
+  background: #f0f0f0;
+}
+
+.settings-stat-value {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #191919;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.settings-stat-value--accent {
+  color: #07c160;
+  font-size: 34rpx;
+}
+
+.settings-stat-label {
+  font-size: 22rpx;
+  color: #999999;
+  white-space: nowrap;
+}
+
+/* 危险操作 */
+.settings-cell--danger {
+  justify-content: center;
+  border-bottom: none;
+  min-height: 96rpx;
+  padding: 28rpx 32rpx;
+}
+
+.settings-cell--danger:active {
+  background: #f7f7f7;
+}
+
+.settings-danger-text {
+  font-size: 32rpx;
+  color: #fa5151;
+  font-weight: 500;
+}
+
+.settings-version {
   text-align: center;
-  padding: 48rpx 0;
+  padding: 24rpx 0 16rpx;
+  font-size: 24rpx;
+  color: #b2b2b2;
 }
