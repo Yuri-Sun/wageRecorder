@@ -20,13 +20,13 @@
         <view class="stat-divider"></view>
         <view class="stat-item">
           <view class="stat-label">今日预估工资</view>
-          <view class="stat-value text-green">${{todayWork.wage}}</view>
+          <view class="stat-value text-green">A${{todayWork.wage}}</view>
         </view>
       </view>
       <view class="flex-between">
         <view class="stat-item">
           <view class="stat-label">时薪</view>
-          <view class="stat-value-small text-orange">${{hourlyRate}}/h</view>
+          <view class="stat-value-small text-orange">A${{hourlyRate}}/小时</view>
         </view>
         <view class="stat-item">
           <view class="stat-label">今日打卡次数</view>
@@ -45,7 +45,7 @@
         <view class="live-duration">
           <view class="live-duration-label">当前预估工资</view>
           <view class="live-duration-value">
-            <text class="live-duration-num">${{liveWage}}</text>
+            <text class="live-duration-num">A${{liveWage}}</text>
           </view>
           <view class="live-wage">{{liveDuration}} 小时</view>
         </view>
@@ -87,7 +87,7 @@
               <text class="recent-date">{{item.date}}</text>
               <text class="recent-time">{{item.startTime}} - {{item.endTime}}</text>
             </view>
-            <view class="recent-wage">${{item.wage}}</view>
+            <view class="recent-wage">A${{item.wage}}</view>
           </view>
         </view>
       </block>

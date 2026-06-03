@@ -253,12 +253,12 @@ App({
   exportTXT(records) {
     let txt = '考勤与薪资记录\n'
     txt += '='.repeat(40) + '\n'
-    txt += `时薪: ¥${this.globalData.hourlyRate}/小时\n`
+    txt += `时薪: A$${this.globalData.hourlyRate}/小时\n`
     txt += '='.repeat(40) + '\n\n'
     records.forEach(r => {
       txt += `日期: ${r.date}\n`
       txt += `上班: ${r.startTime}  下班: ${r.endTime}\n`
-      txt += `工时: ${r.duration} 小时  工资: ¥${r.wage}\n`
+      txt += `工时: ${r.duration} 小时  工资: A$${r.wage}\n`
       if (r.note) txt += `备注: ${r.note}\n`
       txt += '-'.repeat(30) + '\n'
     })

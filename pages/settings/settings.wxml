@@ -9,10 +9,10 @@
       <view class="flex-between">
         <view class="flex-row" style="gap: 8rpx;">
           <text class="rate-label">每小时工资</text>
-          <text class="text-small text-gray">（元/小时）</text>
+          <text class="text-small text-gray">（澳元/小时）</text>
         </view>
         <view class="flex-row rate-input-group">
-          <text class="rate-symbol">$</text>
+          <text class="rate-symbol">A$</text>
           <input class="rate-input" type="digit" value="{{rateInputValue}}" bindinput="onRateInput" bindblur="onRateBlur" />
         </view>
       </view>
@@ -40,7 +40,7 @@
       </view>
       <view class="flex-between">
         <text class="text-small text-gray">总工资</text>
-        <text class="stat-num text-green">${{totalWage}}</text>
+        <text class="stat-num text-green">A${{totalWage}}</text>
       </view>
     </view>
 
@@ -50,7 +50,7 @@
       <view class="export-options">
         <button class="btn-primary export-btn" bindtap="exportCSV">
           <text class="export-icon">📄</text>
-          导出表格
+          导出 CSV
         </button>
         <button class="btn-outline export-btn" bindtap="exportTXT">
           <text class="export-icon">📝</text>

@@ -105,8 +105,8 @@ Page({
         startTime: record.startTime,
         endTime: record.endTime,
         note: record.note || '',
-        deductMeal: false
-      }
+        deductMeal: !!record.mealDeducted,
+      },
     })
     this.updateEditPreview()
   },
@@ -143,11 +143,7 @@ Page({
   updateEditPreview() {
     const app = getApp()
     const { startTime, endTime, deductMeal } = this.data.editForm
-    let { duration, wage } = app.calcDurationAndWage(startTime, endTime)
-    if (deductMeal) {
-      duration = Math.max(0, Math.round((duration - 0.5) * 100) / 100)
-      wage = Math.round(duration * app.getHourlyRate() * 100) / 100
-    }
+    const { duration, wage } = app.calcDurationAndWageWithMeal(startTime, endTime, deductMeal)
     this.setData({ editPreview: { duration, wage } })
   },
 
