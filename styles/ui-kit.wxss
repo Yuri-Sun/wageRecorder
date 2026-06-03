@@ -1,0 +1,388 @@
+/**
+ * 全局 UI 套件（WeUI 风格：灰底 + 分组白卡片）
+ * 设置 / 首页 / 记录 / 报表共用
+ */
+
+.ui-scroll {
+  flex: 1;
+  height: 0;
+}
+
+.ui-page {
+  padding: 24rpx 24rpx 48rpx;
+  box-sizing: border-box;
+}
+
+.ui-section {
+  margin-bottom: 32rpx;
+}
+
+.ui-section-title {
+  display: block;
+  padding: 0 16rpx 12rpx;
+  font-size: 26rpx;
+  color: #888888;
+  font-weight: 500;
+}
+
+
+.ui-section-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16rpx 12rpx;
+}
+
+.ui-section-title--inline {
+  padding: 0;
+}
+
+.ui-section-footnote {
+  display: block;
+  padding: 12rpx 16rpx 0;
+  font-size: 24rpx;
+  color: #b2b2b2;
+  line-height: 1.5;
+}
+
+.ui-group {
+  background: #ffffff;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+/* 顶部 Tab 式筛选 */
+.ui-segment-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 16rpx 24rpx;
+  background: #ffffff;
+  border-bottom: 1rpx solid #e6e6e6;
+  gap: 16rpx;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.ui-segment-item {
+  flex-shrink: 0;
+  padding: 12rpx 28rpx;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+  color: #666666;
+  background: #f5f5f5;
+  white-space: nowrap;
+}
+
+.ui-segment-item--active {
+  background: rgba(7, 193, 96, 0.12);
+  color: #07c160;
+  font-weight: 600;
+}
+
+/* 三列指标 */
+.ui-stats-grid {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  padding: 32rpx 16rpx;
+}
+
+.ui-stat-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  position: relative;
+}
+
+.ui-stat-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 12rpx;
+  bottom: 12rpx;
+  width: 1rpx;
+  background: #f0f0f0;
+}
+
+.ui-stat-value {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #191919;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.ui-stat-value--accent {
+  color: #07c160;
+  font-size: 34rpx;
+}
+
+.ui-stat-label {
+  font-size: 22rpx;
+  color: #999999;
+  white-space: nowrap;
+}
+
+/* 列表行 */
+.ui-cell {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 112rpx;
+  padding: 24rpx 32rpx;
+  box-sizing: border-box;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.ui-cell--last {
+  border-bottom: none;
+}
+
+.ui-cell:active {
+  background: #f7f7f7;
+}
+
+.ui-cell__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6rpx;
+}
+
+.ui-cell__title {
+  font-size: 32rpx;
+  color: #191919;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.ui-cell__desc {
+  font-size: 24rpx;
+  color: #999999;
+  line-height: 1.4;
+}
+
+.ui-cell__extra {
+  flex-shrink: 0;
+  margin-left: 16rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #07c160;
+}
+
+.ui-cell__chevron {
+  font-size: 36rpx;
+  color: #c7c7cc;
+  flex-shrink: 0;
+  margin-left: 8rpx;
+}
+
+/* 工资表格 */
+.ui-table {
+  width: 100%;
+}
+
+.ui-table-head,
+.ui-table-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 20rpx 24rpx;
+  box-sizing: border-box;
+}
+
+.ui-table-head {
+  background: #f7f7f7;
+  border-bottom: 1rpx solid #ebebeb;
+}
+
+.ui-table-row {
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.ui-table-row:last-child {
+  border-bottom: none;
+}
+
+.ui-table-col {
+  font-size: 24rpx;
+  color: #666666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ui-table-head .ui-table-col {
+  font-size: 22rpx;
+  color: #999999;
+  font-weight: 500;
+}
+
+.ui-table-col--period {
+  flex: 1.2;
+  min-width: 0;
+}
+
+.ui-table-col--num {
+  width: 120rpx;
+  text-align: right;
+}
+
+.ui-table-col--wage {
+  width: 140rpx;
+  text-align: right;
+  color: #07c160;
+  font-weight: 600;
+}
+
+.ui-table-row .ui-table-col--wage {
+  font-size: 26rpx;
+}
+
+/* 报表总览绿卡片 */
+.ui-hero-card {
+  background: linear-gradient(135deg, #07c160, #06ad56);
+  color: #ffffff;
+  padding: 40rpx 32rpx;
+  border-radius: 16rpx;
+}
+
+.ui-hero-title {
+  font-size: 28rpx;
+  opacity: 0.9;
+  margin-bottom: 12rpx;
+}
+
+.ui-hero-amount {
+  font-size: 64rpx;
+  font-weight: 700;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.ui-hero-metrics {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16rpx 40rpx;
+  margin-top: 28rpx;
+}
+
+.ui-hero-metric {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8rpx;
+  flex-shrink: 0;
+}
+
+.ui-hero-metric-label {
+  font-size: 24rpx;
+  opacity: 0.85;
+}
+
+.ui-hero-metric-value {
+  font-size: 28rpx;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* 首页时钟英雄区 */
+.ui-clock-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48rpx 32rpx 40rpx;
+  background: linear-gradient(135deg, #07c160, #06ad56);
+  color: #ffffff;
+  border-radius: 16rpx;
+}
+
+.ui-clock-date {
+  font-size: 28rpx;
+  opacity: 0.88;
+  margin-bottom: 8rpx;
+}
+
+.ui-clock-time {
+  font-size: 88rpx;
+  font-weight: 700;
+  letter-spacing: 4rpx;
+  line-height: 1.1;
+}
+
+.ui-clock-weekday {
+  font-size: 28rpx;
+  opacity: 0.85;
+  margin-top: 8rpx;
+}
+
+/* 打卡主按钮区 */
+.ui-punch-panel {
+  padding: 36rpx 32rpx 32rpx;
+}
+
+.ui-punch-hint {
+  text-align: center;
+  font-size: 30rpx;
+  color: #333333;
+  font-weight: 500;
+  margin-bottom: 28rpx;
+  line-height: 1.45;
+}
+
+.ui-live-box {
+  margin-bottom: 24rpx;
+  padding: 28rpx;
+  background: rgba(7, 193, 96, 0.06);
+  border-radius: 12rpx;
+  border: 1rpx solid rgba(7, 193, 96, 0.12);
+  text-align: center;
+}
+
+.ui-live-label {
+  font-size: 24rpx;
+  color: #999999;
+  margin-bottom: 8rpx;
+}
+
+.ui-live-amount {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #ff9500;
+}
+
+.ui-live-sub {
+  font-size: 26rpx;
+  color: #07c160;
+  margin-top: 8rpx;
+}
+
+.ui-link {
+  font-size: 26rpx;
+  color: #07c160;
+  flex-shrink: 0;
+}
+
+.ui-empty {
+  padding: 80rpx 32rpx;
+  text-align: center;
+}
+
+.ui-empty-icon {
+  font-size: 72rpx;
+  margin-bottom: 16rpx;
+  opacity: 0.35;
+}
+
+.ui-empty-text {
+  font-size: 28rpx;
+  color: #999999;
+}

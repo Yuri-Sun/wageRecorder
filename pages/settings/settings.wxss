@@ -1,90 +1,128 @@
 /**pages/settings/settings.wxss**/
+@import '../../styles/ui-kit.wxss';
+
 page {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #F5F5F5;
+  background: #ededed;
 }
 
-.scrollarea {
+.settings-scroll {
   flex: 1;
+  height: 0;
 }
 
-/* 时薪设置 */
-.rate-label {
-  font-size: 28rpx;
-  color: #333333;
-  font-weight: 500;
+.settings-group-footer {
+  padding: 20rpx 32rpx 28rpx;
+  border-top: 1rpx solid #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
 }
 
-.rate-input-group {
-  background: #F5F5F5;
-  border-radius: 12rpx;
-  padding: 12rpx 20rpx;
+.settings-tip {
+  font-size: 24rpx;
+  text-align: center;
+  line-height: 1.5;
 }
 
-.rate-symbol {
-  font-size: 28rpx;
-  color: #07C160;
+.settings-tip--warn {
+  color: #ff9500;
+}
+
+.settings-inline-btn {
+  height: 80rpx;
+  line-height: 80rpx;
+  background: linear-gradient(135deg, #07c160, #06ad56);
+  color: #ffffff;
+  font-size: 30rpx;
   font-weight: 600;
+  border-radius: 12rpx;
+  border: none;
+  padding: 0;
+}
+
+.settings-inline-btn::after {
+  border: none;
+}
+
+.settings-rate-box {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+  background: #f7f7f7;
+  border-radius: 12rpx;
+  padding: 16rpx 24rpx;
+  min-width: 200rpx;
+}
+
+.settings-rate-currency {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #07c160;
   margin-right: 8rpx;
 }
 
-.rate-input {
-  width: 120rpx;
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #333333;
-  text-align: right;
-}
-
-.rate-hint {
-  margin-top: 16rpx;
-  padding: 12rpx 16rpx;
-  background: rgba(255, 149, 0, 0.06);
-  border-radius: 8rpx;
-  font-size: 24rpx;
-}
-
-.rate-preview {
-  margin-top: 12rpx;
-  text-align: center;
-}
-
-.stat-num {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #333333;
-}
-
-/* 导出 */
-.export-options {
-  display: flex;
-  gap: 24rpx;
-  margin-bottom: 16rpx;
-}
-
-.export-btn {
+.settings-rate-input {
   flex: 1;
-  height: 88rpx;
-  font-size: 28rpx;
+  min-width: 80rpx;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #191919;
+  text-align: right;
+  height: 48rpx;
+}
+
+.settings-cell--form {
+  align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
+  border-bottom: none;
+}
+
+.settings-cell__icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 12rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #ffffff;
+  flex-shrink: 0;
+  margin-right: 24rpx;
 }
 
-.export-icon {
+.settings-cell__icon--green {
+  background: linear-gradient(135deg, #07c160, #06ad56);
+}
+
+.settings-cell__icon--blue {
+  background: linear-gradient(135deg, #10aeff, #0e9de6);
+}
+
+.settings-cell--link .ui-cell__body {
+  flex: 1;
+}
+
+.settings-cell--danger {
+  justify-content: center;
+  border-bottom: none;
+  min-height: 96rpx;
+}
+
+.settings-danger-text {
   font-size: 32rpx;
+  color: #fa5151;
+  font-weight: 500;
 }
 
-.export-tip {
+.settings-version {
   text-align: center;
-  line-height: 1.6;
-}
-
-/* 版本 */
-.version-info {
-  text-align: center;
-  padding: 48rpx 0;
+  padding: 24rpx 0 16rpx;
+  font-size: 24rpx;
+  color: #b2b2b2;
 }

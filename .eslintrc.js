@@ -1,6 +1,5 @@
 /*
  * ESLint 配置
- * 文档: https://eslint.org/docs/latest/use/configure/
  */
 module.exports = {
   env: {
@@ -22,5 +21,14 @@ module.exports = {
     requirePlugin: true,
     requireMiniProgram: true,
   },
+  overrides: [
+    {
+      files: ['components/ec-canvas/**/*.js'],
+      parserOptions: {
+        ecmaVersion: 2020,
+        sourceType: 'module',
+      },
+    },
+  ],
   rules: {},
 }

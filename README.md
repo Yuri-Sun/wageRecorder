@@ -14,3 +14,5 @@ npm run lint
 ```
 
 手工回归见 [TEST_CHECKLIST.md](./TEST_CHECKLIST.md)。
+
+图表与表格说明见 [docs/CHARTS.md](./docs/CHARTS.md)。

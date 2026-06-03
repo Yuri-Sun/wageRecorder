@@ -1,79 +1,87 @@
 <!--pages/settings/settings.wxml-->
 <navigation-bar title="设置" back="{{false}}" color="black" background="#FFF"></navigation-bar>
-<scroll-view class="scrollarea" scroll-y type="list">
-  <view class="page-container">
 
-    <!-- 时薪设置 -->
-    <view class="card">
-      <view class="card-title">时薪设置</view>
-      <view class="flex-between">
-        <view class="flex-row" style="gap: 8rpx;">
-          <text class="rate-label">每小时工资</text>
-          <text class="text-small text-gray">（澳元/小时）</text>
+<scroll-view class="settings-scroll ui-scroll" scroll-y>
+  <view class="ui-page">
+
+    <view class="ui-section">
+      <text class="ui-section-title">时薪</text>
+      <view class="ui-group">
+        <view class="ui-cell settings-cell--form">
+          <view class="ui-cell__body">
+            <text class="ui-cell__title">默认时薪</text>
+            <text class="ui-cell__desc">澳元 / 小时，保存后重算全部工资</text>
+          </view>
+          <view class="settings-rate-box">
+            <text class="settings-rate-currency text-nowrap">A$</text>
+            <input
+              class="settings-rate-input"
+              type="digit"
+              value="{{rateInputValue}}"
+              bindinput="onRateInput"
+              bindblur="onRateBlur"
+            />
+          </view>
         </view>
-        <view class="flex-row rate-input-group">
-          <text class="rate-symbol">A$</text>
-          <input class="rate-input" type="digit" value="{{rateInputValue}}" bindinput="onRateInput" bindblur="onRateBlur" />
+        <view class="settings-group-footer" wx:if="{{rateChanged}}">
+          <text class="settings-tip settings-tip--warn">有未保存的修改</text>
+          <button class="settings-inline-btn" bindtap="saveRate">保存时薪</button>
         </view>
       </view>
-      <view class="rate-hint" wx:if="{{rateChanged}}">
-        <text class="text-orange">已修改，点击下方保存按钮生效</text>
-      </view>
-      <button class="btn-primary" wx:if="{{rateChanged}}" bindtap="saveRate" style="margin-top: 24rpx;">
-        保存时薪
-      </button>
-      <view class="rate-preview" wx:if="{{!rateChanged}}">
-        <text class="text-small text-gray">修改后自动保存并重新计算所有工资</text>
+    </view>
+
+    <view class="ui-section">
+      <text class="ui-section-title">数据概览</text>
+      <view class="ui-group ui-stats-grid">
+        <view class="ui-stat-item">
+          <text class="ui-stat-value">{{totalRecords}}</text>
+          <text class="ui-stat-label">打卡记录</text>
+        </view>
+        <view class="ui-stat-item">
+          <text class="ui-stat-value">{{totalDuration}}</text>
+          <text class="ui-stat-label">总工时(h)</text>
+        </view>
+        <view class="ui-stat-item">
+          <text class="ui-stat-value ui-stat-value--accent">A${{totalWage}}</text>
+          <text class="ui-stat-label">总工资</text>
+        </view>
       </view>
     </view>
 
-    <!-- 数据统计 -->
-    <view class="card">
-      <view class="card-title">数据概览</view>
-      <view class="flex-between" style="margin-bottom: 20rpx;">
-        <text class="text-small text-gray">总打卡记录</text>
-        <text class="stat-num">{{totalRecords}} 条</text>
+    <view class="ui-section">
+      <text class="ui-section-title">导出</text>
+      <view class="ui-group">
+        <view class="ui-cell settings-cell--link" bindtap="exportCSV">
+          <view class="settings-cell__icon settings-cell__icon--green">表</view>
+          <view class="ui-cell__body">
+            <text class="ui-cell__title">导出表格</text>
+            <text class="ui-cell__desc">CSV，可用 Excel 打开</text>
+          </view>
+          <text class="ui-cell__chevron">›</text>
+        </view>
+        <view class="ui-cell settings-cell--link ui-cell--last" bindtap="exportTXT">
+          <view class="settings-cell__icon settings-cell__icon--blue">文</view>
+          <view class="ui-cell__body">
+            <text class="ui-cell__title">导出文本</text>
+            <text class="ui-cell__desc">TXT，便于阅读与分享</text>
+          </view>
+          <text class="ui-cell__chevron">›</text>
+        </view>
       </view>
-      <view class="flex-between" style="margin-bottom: 20rpx;">
-        <text class="text-small text-gray">总工时</text>
-        <text class="stat-num">{{totalDuration}} 小时</text>
-      </view>
-      <view class="flex-between">
-        <text class="text-small text-gray">总工资</text>
-        <text class="stat-num text-green">A${{totalWage}}</text>
-      </view>
+      <text class="ui-section-footnote">导出全部本地记录，可分享到微信聊天</text>
     </view>
 
-    <!-- 导出功能 -->
-    <view class="card">
-      <view class="card-title">导出记录</view>
-      <view class="export-options">
-        <button class="btn-primary export-btn" bindtap="exportCSV">
-          <text class="export-icon">📄</text>
-          导出 CSV
-        </button>
-        <button class="btn-outline export-btn" bindtap="exportTXT">
-          <text class="export-icon">📝</text>
-          导出 TXT
-        </button>
+    <view class="ui-section">
+      <view class="ui-group">
+        <view class="ui-cell settings-cell--danger" bindtap="clearAllData">
+          <text class="settings-danger-text">清空所有数据</text>
+        </view>
       </view>
-      <view class="export-tip text-small text-gray">
-        支持导出全部打卡记录，可在微信中打开或分享给好友
-      </view>
+      <text class="ui-section-footnote">不可恢复，请谨慎操作</text>
     </view>
 
-    <!-- 清空数据 -->
-    <view class="card">
-      <view class="card-title">数据管理</view>
-      <button class="btn-danger" bindtap="clearAllData">清空所有数据</button>
-      <view class="text-small text-gray" style="margin-top: 16rpx; text-align: center;">
-        此操作不可恢复，请谨慎使用
-      </view>
-    </view>
-
-    <!-- 版本信息 -->
-    <view class="version-info">
-      <text class="text-small text-gray">考勤薪资记录 v1.0.0</text>
+    <view class="settings-version">
+      <text>考勤薪资记录 v1.0.0</text>
     </view>
 
   </view>

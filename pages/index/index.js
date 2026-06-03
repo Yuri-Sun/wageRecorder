@@ -20,6 +20,7 @@ Page({
   timer: null,
 
   onShow() {
+    getApp().reloadRecordsFromStorage()
     this.updateClock()
     this.timer = setInterval(() => this.updateClock(), 60000)
     this.refreshData()
@@ -57,6 +58,11 @@ Page({
       wx.removeStorageSync('pendingPunch')
       this.setData({ punchState: 'off', startTime: '', liveDuration: '0.00', liveWage: '0.00' })
     }
+  },
+
+  onRecordsChanged() {
+    getApp().reloadRecordsFromStorage()
+    this.refreshData()
   },
 
   refreshData() {

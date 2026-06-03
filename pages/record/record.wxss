@@ -1,61 +1,128 @@
 /**pages/record/record.wxss**/
+@import '../../styles/ui-kit.wxss';
+
 page {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #F5F5F5;
+  background: #ededed;
 }
 
-.scrollarea {
+.record-scroll {
   flex: 1;
+  height: 0;
 }
 
-.summary-bar {
-  padding: 24rpx 32rpx;
-  margin-bottom: 16rpx;
+.ui-cell--record {
+  align-items: flex-start;
+  min-height: 120rpx;
 }
 
-.record-card {
-  padding: 24rpx 32rpx;
+.record-cell-main {
+  padding-right: 16rpx;
 }
 
-.record-date {
-  font-size: 28rpx;
-  font-weight: 600;
+.record-cell-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+  gap: 12rpx;
+}
+
+.record-wage {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #07c160;
+}
+
+.record-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 20rpx;
+}
+
+.record-action {
+  font-size: 26rpx;
+  white-space: nowrap;
+}
+
+.record-action--edit {
+  color: #10aeff;
+}
+
+.record-action--del {
+  color: #fa5151;
+}
+
+.record-modal {
+  width: 640rpx;
+  padding: 36rpx 32rpx 32rpx;
+}
+
+.record-modal-group {
+  margin-bottom: 24rpx;
+  padding: 8rpx 0;
+}
+
+.record-form-row {
+  display: flex;
+  flex-direction: row;
+  gap: 20rpx;
+  padding: 16rpx 24rpx;
+}
+
+.record-form-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.record-form-block {
+  padding: 12rpx 24rpx 16rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.record-form-label {
+  display: block;
+  font-size: 24rpx;
+  color: #999999;
+  margin-bottom: 8rpx;
+}
+
+.record-form-picker {
+  height: 72rpx;
+  line-height: 72rpx;
+  background: #f7f7f7;
+  border-radius: 8rpx;
+  padding: 0 20rpx;
+  font-size: 30rpx;
   color: #333333;
 }
 
-.record-edit {
-  font-size: 24rpx;
-  color: #10AEFF;
-  padding: 4rpx 8rpx;
-}
-
-.record-delete {
-  font-size: 24rpx;
-  color: #FA5151;
-  padding: 4rpx 8rpx;
-}
-
-.record-detail {
-  font-size: 26rpx;
-  color: #666666;
-}
-
-.record-note {
-  margin-top: 12rpx;
-  font-size: 24rpx;
-  color: #999999;
-  padding: 8rpx 16rpx;
-  background: #F9F9F9;
+.record-form-input {
+  height: 72rpx;
+  background: #f7f7f7;
   border-radius: 8rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
 }
 
-/* 吃饭扣除勾选 */
+.record-meal-check {
+  justify-content: flex-start;
+  padding: 16rpx 24rpx 8rpx;
+  margin-bottom: 0;
+}
+
+.record-preview {
+  padding: 12rpx 24rpx 20rpx;
+  font-size: 26rpx;
+  color: #07c160;
+  text-align: center;
+}
+
 .meal-check {
   display: flex;
   align-items: center;
-  margin-bottom: 8rpx;
   gap: 12rpx;
 }
 
@@ -63,17 +130,18 @@ page {
   width: 36rpx;
   height: 36rpx;
   border-radius: 8rpx;
-  border: 3rpx solid #CCCCCC;
+  border: 3rpx solid #cccccc;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 24rpx;
-  color: #FFFFFF;
+  color: #ffffff;
+  flex-shrink: 0;
 }
 
 .meal-checkbox.checked {
-  background: #FF9500;
-  border-color: #FF9500;
+  background: #ff9500;
+  border-color: #ff9500;
 }
 
 .meal-label {

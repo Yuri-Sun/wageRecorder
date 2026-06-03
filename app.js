@@ -40,6 +40,27 @@ App({
   // 保存记录列表
   saveRecords() {
     wx.setStorageSync('records', this.globalData.records)
+    this.notifyRecordsChanged()
+  },
+
+  /** 从本地存储同步到 globalData（切换 Tab 后刷新用） */
+  reloadRecordsFromStorage() {
+    const stored = wx.getStorageSync('records')
+    if (Array.isArray(stored)) {
+      this.globalData.records = stored
+    }
+    return this.globalData.records
+  },
+
+  /** 记录变更后通知当前页面栈刷新（如正在查看报表 Tab） */
+  notifyRecordsChanged() {
+    this.globalData.recordsRevision = (this.globalData.recordsRevision || 0) + 1
+    const pages = getCurrentPages()
+    pages.forEach(page => {
+      if (page && typeof page.onRecordsChanged === 'function') {
+        page.onRecordsChanged()
+      }
+    })
   },
 
   // 计算单条记录的工时（小时）和工资
@@ -235,7 +256,7 @@ App({
       return text
     }
 
-    let csv = '日期,上班时间,下班时间,工时(小时),工资,备注\n'
+    let csv = '日期,上班时间,下班时间,工时(小时),工资(A$),备注\n'
     records.forEach(r => {
       csv += [
         escapeCsv(r.date),
