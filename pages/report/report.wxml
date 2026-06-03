@@ -30,7 +30,10 @@
     <block wx:if="{{stats.length > 0}}">
       <view class="ui-section">
         <view class="ui-group ui-hero-card">
-          <text class="ui-hero-title">{{periodLabel}} · 工资总览</text>
+          <view class="ui-hero-head">
+            <text class="ui-hero-period text-nowrap">{{periodLabel}}</text>
+            <text class="ui-hero-caption">工资总览</text>
+          </view>
           <text class="ui-hero-amount text-nowrap">A${{overview.totalWage}}</text>
           <view class="ui-hero-metrics">
             <view class="ui-hero-metric">

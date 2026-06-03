@@ -1,26 +1,38 @@
 // pages/record/record.js
 const app = getApp()
+const {
+  getWeekRangeForAnchor,
+  formatWeekRangeLabel,
+  formatMonthPickerDisplay,
+} = require('../../utils/report-range.js')
 
 Page({
   data: {
     filterType: 'all', // 'all' | 'day' | 'week' | 'month'
     filterDate: '',
+    maxDate: '',
+    weekRangeLabel: '',
+    filterMonthDisplay: '',
     filteredRecords: [],
     summary: { count: 0, totalDuration: 0, totalWage: 0 },
-    // 编辑弹窗
     showEditModal: false,
     editingId: '',
     editForm: { date: '', startTime: '', endTime: '', note: '', deductMeal: false },
-    editPreview: { duration: 0, wage: 0 }
+    editPreview: { duration: 0, wage: 0 },
   },
 
   onShow() {
     app.reloadRecordsFromStorage()
-    const app = getApp()
-    this.setData({ filterDate: app.getDateString() })
+    const today = app.getDateString()
+    const filterDate = this.data.filterDate || today
+    this.setData({
+      filterDate,
+      maxDate: today,
+      filterMonthDisplay: formatMonthPickerDisplay(filterDate),
+    })
+    this.updateRangeLabels()
     this.loadRecords()
   },
-
 
   onRecordsChanged() {
     app.reloadRecordsFromStorage()
@@ -29,51 +41,65 @@ Page({
 
   setFilter(e) {
     const type = e.currentTarget.dataset.type
-    this.setData({ filterType: type })
+    const today = app.getDateString()
+    const updates = { filterType: type }
+    if (type !== 'all' && !this.data.filterDate) {
+      updates.filterDate = today
+      updates.filterMonthDisplay = formatMonthPickerDisplay(today)
+    }
+    this.setData(updates, () => {
+      this.updateRangeLabels()
+      this.loadRecords()
+    })
+  },
+
+  onFilterDateChange(e) {
+    const value = e.detail.value
+    this.setData({
+      filterDate: value,
+      filterMonthDisplay: formatMonthPickerDisplay(value),
+    })
+    this.updateRangeLabels()
     this.loadRecords()
   },
 
-  onDateChange(e) {
-    this.setData({ filterDate: e.detail.value, filterType: 'day' })
-    this.loadRecords()
-  },
-
-  parseDateString(dateStr) {
-    const [y, m, d] = dateStr.split('-').map(Number)
-    return new Date(y, m - 1, d)
+  updateRangeLabels() {
+    const { filterType, filterDate } = this.data
+    if (filterType === 'day' || filterType === 'week') {
+      const anchor = filterDate || app.getDateString()
+      const { weekStart, weekEnd } = getWeekRangeForAnchor(anchor)
+      this.setData({ weekRangeLabel: formatWeekRangeLabel(weekStart, weekEnd) })
+    } else {
+      this.setData({ weekRangeLabel: '' })
+    }
   },
 
   loadRecords() {
-    const app = getApp()
     const allRecords = app.getRecords()
     let filteredRecords = []
+    const anchor = this.data.filterDate || app.getDateString()
 
     if (this.data.filterType === 'day') {
-      filteredRecords = allRecords.filter(r => r.date === this.data.filterDate)
+      filteredRecords = allRecords.filter(r => r.date === anchor)
     } else if (this.data.filterType === 'week') {
-      const baseDate = this.parseDateString(this.data.filterDate || app.getDateString())
-      const weekStart = new Date(baseDate)
-      const dayOfWeek = baseDate.getDay()
-      const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek
-      weekStart.setDate(baseDate.getDate() + diff)
-      const weekEnd = new Date(weekStart)
-      weekEnd.setDate(weekStart.getDate() + 6)
-      const start = app.getDateString(weekStart)
-      const end = app.getDateString(weekEnd)
-      filteredRecords = allRecords.filter(r => r.date >= start && r.date <= end)
+      const { weekStart, weekEnd } = getWeekRangeForAnchor(anchor)
+      filteredRecords = allRecords.filter(r => r.date >= weekStart && r.date <= weekEnd)
     } else if (this.data.filterType === 'month') {
-      const month = (this.data.filterDate || app.getDateString()).substring(0, 7)
+      const month = anchor.substring(0, 7)
       filteredRecords = allRecords.filter(r => r.date.startsWith(month))
     } else {
       filteredRecords = allRecords
     }
 
-    const summary = filteredRecords.reduce((acc, r) => {
-      acc.totalDuration += r.duration
-      acc.totalWage += r.wage
-      acc.count++
-      return acc
-    }, { count: 0, totalDuration: 0, totalWage: 0 })
+    const summary = filteredRecords.reduce(
+      (acc, r) => {
+        acc.totalDuration += r.duration
+        acc.totalWage += r.wage
+        acc.count++
+        return acc
+      },
+      { count: 0, totalDuration: 0, totalWage: 0 }
+    )
 
     summary.totalDuration = Math.round(summary.totalDuration * 100) / 100
     summary.totalWage = Math.round(summary.totalWage * 100) / 100
@@ -81,7 +107,6 @@ Page({
     this.setData({ filteredRecords, summary })
   },
 
-  // 删除记录
   deleteRecord(e) {
     const id = e.currentTarget.dataset.id
     wx.showModal({
@@ -93,11 +118,10 @@ Page({
           this.loadRecords()
           wx.showToast({ title: '已删除', icon: 'success' })
         }
-      }
+      },
     })
   },
 
-  // 编辑记录
   editRecord(e) {
     const id = e.currentTarget.dataset.id
     const records = app.getRecords()
@@ -112,7 +136,7 @@ Page({
         startTime: record.startTime,
         endTime: record.endTime,
         note: record.note || '',
-        deductMeal: !!record.mealDeducted,
+        deductMeal: false,
       },
     })
     this.updateEditPreview()
@@ -148,31 +172,29 @@ Page({
   },
 
   updateEditPreview() {
-    const app = getApp()
     const { startTime, endTime, deductMeal } = this.data.editForm
-    const { duration, wage } = app.calcDurationAndWageWithMeal(startTime, endTime, deductMeal)
+    let { duration, wage } = app.calcDurationAndWage(startTime, endTime)
+    if (deductMeal) {
+      duration = Math.max(0, Math.round((duration - 0.5) * 100) / 100)
+      wage = Math.round(duration * app.getHourlyRate() * 100) / 100
+    }
     this.setData({ editPreview: { duration, wage } })
   },
 
   saveEdit() {
-    const app = getApp()
     const { date, startTime, endTime, note, deductMeal } = this.data.editForm
     if (!startTime || !endTime) {
       wx.showToast({ title: '请填写时间', icon: 'none' })
       return
     }
-    const { duration, wage } = app.calcDurationAndWageWithMeal(startTime, endTime, deductMeal)
-    app.updateRecord(this.data.editingId, {
-      date,
-      startTime,
-      endTime,
-      note,
-      duration,
-      wage,
-      mealDeducted: deductMeal,
-    })
+    let { duration, wage } = app.calcDurationAndWage(startTime, endTime)
+    if (deductMeal) {
+      duration = Math.max(0, Math.round((duration - 0.5) * 100) / 100)
+      wage = Math.round(duration * app.getHourlyRate() * 100) / 100
+    }
+    app.updateRecord(this.data.editingId, { date, startTime, endTime, note, duration, wage })
     this.setData({ showEditModal: false })
     this.loadRecords()
     wx.showToast({ title: '保存成功', icon: 'success' })
-  }
+  },
 })

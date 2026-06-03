@@ -13,6 +13,11 @@ page {
   height: 0;
 }
 
+.record-range-hint {
+  display: block;
+  padding-top: 8rpx;
+}
+
 .ui-cell--record {
   align-items: flex-start;
   min-height: 120rpx;
