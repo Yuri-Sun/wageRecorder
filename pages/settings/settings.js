@@ -170,8 +170,9 @@ Page({
       wx.showToast({ title: '该时间范围内暂无记录', icon: 'none' })
       return
     }
-    const content = ext === 'csv' ? app.exportCSV(records) : app.exportTXT(records)
     const { exportStartDate, exportEndDate } = this.data
+    const meta = { startDate: exportStartDate, endDate: exportEndDate }
+    const content = ext === 'csv' ? app.exportCSV(records, meta) : app.exportTXT(records, meta)
     const rangeSuffix = `${exportStartDate}_${exportEndDate}`
     this.shareFile(content, ext, ext === 'csv' ? 'text/csv' : 'text/plain', rangeSuffix)
   },

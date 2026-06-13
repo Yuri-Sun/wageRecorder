@@ -1,5 +1,6 @@
 // app.js
 const wageUtil = require('./utils/wage.js')
+const exportFormat = require('./utils/export-format.js')
 
 App({
   globalData: {
@@ -246,43 +247,19 @@ App({
     return wageUtil.getWeekEnd(date, d => this.getDateString(d))
   },
 
-  // 导出为 CSV
-  exportCSV(records) {
-    const escapeCsv = value => {
-      const text = String(value ?? '')
-      if (text.includes('"') || text.includes(',') || text.includes('\n') || text.includes('\r')) {
-        return `"${text.replace(/"/g, '""')}"`
-      }
-      return text
-    }
-
-    let csv = '日期,上班时间,下班时间,工时(小时),工资(A$),备注\n'
-    records.forEach(r => {
-      csv += [
-        escapeCsv(r.date),
-        escapeCsv(r.startTime),
-        escapeCsv(r.endTime),
-        escapeCsv(r.duration),
-        escapeCsv(r.wage),
-        escapeCsv(r.note || ''),
-      ].join(',') + '\n'
+  // 导出为 CSV（含汇总：记录数、总工时、总工资）
+  exportCSV(records, meta = {}) {
+    return exportFormat.formatExportCSV(records, {
+      hourlyRate: this.globalData.hourlyRate,
+      ...meta,
     })
-    return csv
   },
 
-  // 导出为 TXT
-  exportTXT(records) {
-    let txt = '考勤与薪资记录\n'
-    txt += '='.repeat(40) + '\n'
-    txt += `时薪: A$${this.globalData.hourlyRate}/小时\n`
-    txt += '='.repeat(40) + '\n\n'
-    records.forEach(r => {
-      txt += `日期: ${r.date}\n`
-      txt += `上班: ${r.startTime}  下班: ${r.endTime}\n`
-      txt += `工时: ${r.duration} 小时  工资: A$${r.wage}\n`
-      if (r.note) txt += `备注: ${r.note}\n`
-      txt += '-'.repeat(30) + '\n'
+  // 导出为 TXT（含汇总：记录数、总工时、总工资）
+  exportTXT(records, meta = {}) {
+    return exportFormat.formatExportTXT(records, {
+      hourlyRate: this.globalData.hourlyRate,
+      ...meta,
     })
-    return txt
   },
 })
