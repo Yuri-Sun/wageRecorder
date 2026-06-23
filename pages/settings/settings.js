@@ -3,6 +3,9 @@ const app = getApp()
 const {
   filterRecordsByDateRange,
   getDefaultExportRange,
+  getMaxExportDate,
+  resolveExportStartChange,
+  resolveExportEndChange,
 } = require('../../utils/record-filter.js')
 const { runPullDownRefresh } = require('../../utils/page-refresh.js')
 
@@ -38,8 +41,10 @@ Page({
     const rate = app.getHourlyRate()
 
     const { startDate, endDate } = getDefaultExportRange(records, today)
+    const maxDate = getMaxExportDate(records, today)
     const exportStartDate = this.data.exportStartDate || startDate
     const exportEndDate = this.data.exportEndDate || endDate
+    const normalizedRange = resolveExportStartChange(exportStartDate, exportEndDate || endDate, maxDate)
 
     this.setData({
       hourlyRate: rate,
@@ -48,28 +53,15 @@ Page({
       totalRecords,
       totalDuration,
       totalWage,
-      maxDate: today,
-      exportStartDate: this.clampStart(exportStartDate, exportEndDate || endDate),
-      exportEndDate: this.clampEnd(exportEndDate || endDate, exportStartDate, today),
+      maxDate,
+      exportStartDate: normalizedRange.startDate,
+      exportEndDate: normalizedRange.endDate,
     })
     this.refreshExportPreview()
   },
 
   onRecordsChanged() {
     this.refreshPageData()
-  },
-
-  clampStart(start, end) {
-    if (!start) return start
-    if (!end) return start
-    return start > end ? end : start
-  },
-
-  clampEnd(end, start, maxDate) {
-    let value = end || maxDate
-    if (start && value < start) value = start
-    if (maxDate && value > maxDate) value = maxDate
-    return value
   },
 
   refreshExportPreview() {
@@ -86,15 +78,22 @@ Page({
   },
 
   onExportStartChange(e) {
-    const exportStartDate = e.detail.value
-    const exportEndDate = this.clampEnd(this.data.exportEndDate, exportStartDate, this.data.maxDate)
-    this.setData({ exportStartDate, exportEndDate })
+    const { startDate, endDate } = resolveExportStartChange(
+      e.detail.value,
+      this.data.exportEndDate,
+      this.data.maxDate
+    )
+    this.setData({ exportStartDate: startDate, exportEndDate: endDate })
     this.refreshExportPreview()
   },
 
   onExportEndChange(e) {
-    const exportEndDate = this.clampEnd(e.detail.value, this.data.exportStartDate, this.data.maxDate)
-    this.setData({ exportEndDate })
+    const { startDate, endDate } = resolveExportEndChange(
+      e.detail.value,
+      this.data.exportStartDate,
+      this.data.maxDate
+    )
+    this.setData({ exportStartDate: startDate, exportEndDate: endDate })
     this.refreshExportPreview()
   },
 
