@@ -15,7 +15,7 @@ App({
       this.globalData.hourlyRate = hourlyRate
     }
     const records = wx.getStorageSync('records')
-    if (records) {
+    if (Array.isArray(records)) {
       this.globalData.records = records
     }
   },
