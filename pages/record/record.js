@@ -35,7 +35,6 @@ Page({
   },
 
   onRecordsChanged() {
-    app.reloadRecordsFromStorage()
     this.loadRecords()
   },
 

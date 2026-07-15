@@ -31,8 +31,10 @@ Page({
     this.refreshPageData()
   },
 
-  refreshPageData() {
-    app.reloadRecordsFromStorage()
+  refreshPageData(reloadFromStorage = true) {
+    if (reloadFromStorage) {
+      app.reloadRecordsFromStorage()
+    }
     const today = app.getDateString()
     const records = app.getRecords()
     const totalRecords = records.length
@@ -61,7 +63,7 @@ Page({
   },
 
   onRecordsChanged() {
-    this.refreshPageData()
+    this.refreshPageData(false)
   },
 
   refreshExportPreview() {

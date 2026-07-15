@@ -53,7 +53,10 @@ App({
     return this.globalData.records
   },
 
-  /** 记录变更后通知当前页面栈刷新（如正在查看报表 Tab） */
+  /**
+   * 记录变更后通知当前页面栈刷新（如正在查看报表 Tab）。
+   * saveRecords 已先更新 storage；监听器应直接读取当前 globalData，避免同步通知期间重入 storage。
+   */
   notifyRecordsChanged() {
     this.globalData.recordsRevision = (this.globalData.recordsRevision || 0) + 1
     const pages = getCurrentPages()

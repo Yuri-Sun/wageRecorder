@@ -61,7 +61,6 @@ Page({
   },
 
   onRecordsChanged() {
-    getApp().reloadRecordsFromStorage()
     this.refreshData()
   },
 
