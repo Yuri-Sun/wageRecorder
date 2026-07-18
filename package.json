@@ -1,6 +1,6 @@
 {
   "name": "wage-recorder",
-  "version": "1.0.0",
+  "version": "3.0.1",
   "private": true,
   "description": "微信小程序：工时记录与工资计算",
   "scripts": {

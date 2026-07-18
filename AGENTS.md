@@ -2,12 +2,16 @@
 
 ## Project overview
 
-**wageRecorder**：微信小程序，本地考勤与澳元（A$）工资计算。
+**wageRecorder**：微信小程序，本地考勤与澳元（A$）工资计算。当前版本 **3.0.1**。
 
 - 业务逻辑：`utils/wage.js` + `app.js`
 - 界面：`styles/ui-kit.wxss`（WeUI 风格分组列表）
 - 图表：`components/wage-chart` + `components/ec-canvas`（ECharts）
-- 说明：`docs/CHARTS.md`
+- 导出：`utils/export-format.js`（CSV / 微信友好 TXT）
+- 说明：`docs/CHARTS.md`、`docs/CHART_BUNDLE.md`
+- 手工回归：`TEST_CHECKLIST.md`
+- App ID：`project.config.json`（`wx618c2a8d0fe1087e`）
+- 基础库：`project.private.config.json`（`libVersion` 3.16.1）
 
 ## 开发命令
 
@@ -17,22 +21,13 @@ npm test
 npm run lint
 ```
 
-
 ## 图表包体
 
 - 报表使用 `components/ec-canvas/echarts.js`（由 `npm run build:echarts` 从 `echarts.common.min.js` 生成，约 650KB）。
-- 详见 `docs/CHART_BUNDLE.md`。
 
 ## 下拉刷新
 
 - 记录 / 报表 / 设置页已开启 `enablePullDownRefresh`，逻辑在 `utils/page-refresh.js`。
-
-## Cursor Cloud
-
-- VM 更新脚本：`npm install`
-- UI 需在 [微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html) 预览
-- Skyline：`app.json` + `skylineRenderEnable: true`
-- 报表 ECharts 需基础库 ≥ 2.9.0
 
 ## 页面结构约定
 
@@ -46,61 +41,41 @@ npm run lint
 | `ui-table` | 工资明细表 |
 | `ui-segment-bar` | 顶部分段筛选 |
 
-手工回归：`TEST_CHECKLIST.md`
-**wageRecorder** is a client-only WeChat Mini Program for punch in/out, work-hour tracking, and wage calculation. There is no backend, `package.json`, or automated test runner in the repository.
-
-- Entry: `app.json`, `app.js`
-- Manual regression: `TEST_CHECKLIST.md`
-- App ID: `project.config.json` (`wx618c2a8d0fe1087e`)
-- Base library: `project.private.config.json` (`libVersion` 3.16.1)
-
-
-## 图表包体
-
-- 报表使用 `components/ec-canvas/echarts.js`（由 `npm run build:echarts` 从 `echarts.common.min.js` 生成，约 650KB）。
-- 详见 `docs/CHART_BUNDLE.md`。
-
-## 下拉刷新
-
-- 记录 / 报表 / 设置页已开启 `enablePullDownRefresh`，逻辑在 `utils/page-refresh.js`。
-
 ## Cursor Cloud specific instructions
 
 ### What runs in the cloud VM
 
-This repo has **no npm dependencies** to install. Cloud agents can validate the project headlessly:
+仓库含 `package.json` 与 `tests/*.test.js`。Cloud agents 可无头验证：
 
 | Check | Command |
 |-------|---------|
-| JS syntax | `find . -name '*.js' -exec node --check {} \;` |
-| ESLint | See note below — use ECMAScript 2020 parser because source uses `??` |
-| Core logic smoke | Run `/tmp/verify-wage-recorder.mjs` (create once per session; see setup agent transcript) or re-run the inline checks from that script |
+| Unit tests | `npm test` |
+| Lint | `npm run lint`（`.eslintrc.js` 已设 `ecmaVersion: 2020`） |
+| JS syntax | `rg --files -g '*.js' -g '!node_modules' -0 \| xargs -0 -n1 node --check` |
 | Asset integrity | Confirm `pages/*/*.{js,wxml,wxss,json}` and `images/tab_*.png` exist |
 
-**ESLint note:** `.eslintrc.js` sets `ecmaVersion: 2018`, but the code uses nullish coalescing (`??`). Until the config is updated, lint with:
-
-```bash
-npx --yes eslint@8 . --ext .js --parser-options '{"ecmaVersion":2020}'
-```
+`npm install` 主要用于 devDependencies（eslint / echarts 构建）。无后端服务。
 
 ### Running the app (required for UI / E2E)
 
-The mini program **must** be opened in [WeChat Developer Tools](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html) (macOS/Windows). Point the tool at the repo root (`/workspace`). Use the simulator and follow `TEST_CHECKLIST.md` for manual regression.
+小程序须在 [微信开发者工具](https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html)（macOS/Windows）打开仓库根目录。按 `TEST_CHECKLIST.md` 手工回归。
 
-- Hot reload: enabled in `project.private.config.json` (`compileHotReLoad`)
-- Renderer: Skyline + glass-easel (`app.json`) — use a recent DevTools base library (3.x+)
-- There is no `npm run dev` or local HTTP server
+- Hot reload：`project.private.config.json`（`compileHotReLoad`）
+- Renderer：Skyline + glass-easel（`app.json`），建议基础库 3.x+
+- 报表 ECharts 需基础库 ≥ 2.9.0
+- 无 `npm run dev` / 本地 HTTP server
 
 ### Lint / test / build summary
 
 | Task | How |
 |------|-----|
-| Lint | ESLint via editor extension or `npx eslint@8` (see parser note above) |
-| Test | Manual only (`TEST_CHECKLIST.md`) |
-| Build / release | WeChat DevTools: Preview / Upload (minify flags in `project.config.json`) |
+| Lint | `npm run lint` |
+| Test | `npm test` + 手工 `TEST_CHECKLIST.md` |
+| Build / release | WeChat DevTools: Preview / Upload |
 
 ### Gotchas
 
-- Do not expect `wx` APIs to work under plain Node — UI flows need DevTools or a real device preview.
-- Meal deduction subtracts **0.5h** from duration on punch-out (`pages/index/index.js`) and in record edits (`pages/record/record.js`).
-- Export from settings uses clipboard fallback when file APIs are unavailable in the simulator.
+- 不要期望在纯 Node 下调用 `wx` API；UI 流程需 DevTools 或真机。
+- 午饭扣减 0.5h：打卡下班与记录编辑需写入 `mealDeducted`；`setHourlyRate` 按该标记重算。
+- `saveRecords` 同步通知期间，页面 `onRecordsChanged` 不要再 `reloadRecordsFromStorage`。
+- 导出失败时降级剪贴板；TXT 面向微信聊天阅读。

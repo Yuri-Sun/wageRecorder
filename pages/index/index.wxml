@@ -87,5 +87,9 @@
       </view>
     </view>
 
+    <view class="index-version">
+      <text>考勤薪资记录 v3.0.1</text>
+    </view>
+
   </view>
 </scroll-view>
