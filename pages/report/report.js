@@ -24,7 +24,6 @@ Page({
     weekRangeLabel: '',
     anchorMonthDisplay: '',
     periodLabel: '本月',
-    showAllMonthsNote: false,
     emptyHint: '',
     highlightIndex: -1,
     overview: { totalWage: 0, totalDuration: 0, totalCount: 0, avgWage: 0 },
@@ -108,7 +107,7 @@ Page({
       periodLabel = `本周 ${weekLabel}`
     }
 
-    this.setData({ weekRangeLabel: weekLabel, periodLabel, showAllMonthsNote: false })
+    this.setData({ weekRangeLabel: weekLabel, periodLabel })
     return stats
   },
 
@@ -127,7 +126,6 @@ Page({
     this.setData({
       weekRangeLabel: '',
       periodLabel,
-      showAllMonthsNote: false,
       anchorMonthDisplay: formatMonthPickerDisplay(anchorDate),
     })
     return stats
@@ -180,7 +178,6 @@ Page({
       highlightIndex,
       overview: { totalWage, totalDuration, totalCount, avgWage },
       emptyHint,
-      showAllMonthsNote: false,
     })
   },
 })
