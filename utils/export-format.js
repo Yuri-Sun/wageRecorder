@@ -24,11 +24,34 @@ function escapeCsv(value) {
   return text
 }
 
+function formatDateRange(startDate, endDate) {
+  if (!startDate && !endDate) return ''
+  if (startDate && endDate) {
+    if (startDate === endDate) return startDate
+    return `${startDate} ～ ${endDate}`
+  }
+  return startDate || endDate
+}
+
+function sortRecordsChronologically(records) {
+  return [...records].sort(
+    (a, b) => a.date.localeCompare(b.date) || a.startTime.localeCompare(b.startTime)
+  )
+}
+
+function formatRecordTags(record) {
+  const tags = []
+  if (record.mealDeducted) tags.push('已扣午饭')
+  if (record.note) tags.push(record.note)
+  return tags
+}
+
 function formatExportCSV(records, { hourlyRate, startDate, endDate } = {}) {
   let csv = ''
+  const range = formatDateRange(startDate, endDate)
 
-  if (startDate && endDate) {
-    csv += `${escapeCsv('导出范围')},${escapeCsv(`${startDate} ~ ${endDate}`)}\n`
+  if (range) {
+    csv += `${escapeCsv('导出范围')},${escapeCsv(range)}\n`
   }
   if (hourlyRate != null) {
     csv += `${escapeCsv('时薪(A$/小时)')},${escapeCsv(hourlyRate)}\n`
@@ -39,14 +62,15 @@ function formatExportCSV(records, { hourlyRate, startDate, endDate } = {}) {
   csv += `${escapeCsv('总工资(A$)')},${escapeCsv(summary.totalWage)}\n`
   csv += '\n'
 
-  csv += '日期,上班时间,下班时间,工时(小时),工资(A$),备注\n'
-  records.forEach(r => {
+  csv += '日期,上班时间,下班时间,工时(小时),工资(A$),扣午饭,备注\n'
+  sortRecordsChronologically(records).forEach(r => {
     csv += [
       escapeCsv(r.date),
       escapeCsv(r.startTime),
       escapeCsv(r.endTime),
       escapeCsv(r.duration),
       escapeCsv(r.wage),
+      escapeCsv(r.mealDeducted ? '是' : ''),
       escapeCsv(r.note || ''),
     ].join(',') + '\n'
   })
@@ -58,46 +82,54 @@ function formatExportCSV(records, { hourlyRate, startDate, endDate } = {}) {
     escapeCsv(''),
     escapeCsv(summary.totalDuration),
     escapeCsv(summary.totalWage),
+    escapeCsv(''),
     escapeCsv(`共 ${summary.count} 条`),
   ].join(',') + '\n'
 
   return csv
 }
 
+/**
+ * 面向微信聊天阅读的文本格式：摘要置顶、单行明细、信息完整。
+ */
 function formatExportTXT(records, { hourlyRate, startDate, endDate } = {}) {
   const summary = summarizeRecords(records)
-  const divider = '='.repeat(40)
+  const range = formatDateRange(startDate, endDate)
+  const ordered = sortRecordsChronologically(records)
+  const lines = []
 
-  let txt = '考勤与薪资记录\n'
-  txt += divider + '\n'
-  if (hourlyRate != null) {
-    txt += `时薪: A$${hourlyRate}/小时\n`
-  }
-  if (startDate && endDate) {
-    txt += `导出范围: ${startDate} ~ ${endDate}\n`
-  }
-  txt += divider + '\n\n'
+  lines.push('【考勤薪资记录】')
+  if (range) lines.push(`范围：${range}`)
+  if (hourlyRate != null) lines.push(`时薪：A$${hourlyRate} / 小时`)
+  lines.push(
+    `合计：${summary.count} 条 · ${summary.totalDuration} 小时 · A$${summary.totalWage}`
+  )
+  lines.push('')
+  lines.push('明细')
 
-  records.forEach(r => {
-    txt += `日期: ${r.date}\n`
-    txt += `上班: ${r.startTime}  下班: ${r.endTime}\n`
-    txt += `工时: ${r.duration} 小时  工资: A$${r.wage}\n`
-    if (r.note) txt += `备注: ${r.note}\n`
-    txt += '-'.repeat(30) + '\n'
+  ordered.forEach((r, index) => {
+    const tags = formatRecordTags(r)
+    let line =
+      `${index + 1}. ${r.date}  ${r.startTime}–${r.endTime}` +
+      `  ·  ${r.duration} 小时  ·  A$${r.wage}`
+    if (tags.length) {
+      line += `  （${tags.join('，')}）`
+    }
+    lines.push(line)
   })
 
-  txt += '\n' + divider + '\n'
-  txt += '统计汇总\n'
-  txt += `记录数: ${summary.count} 条\n`
-  txt += `总工时: ${summary.totalDuration} 小时\n`
-  txt += `总工资: A$${summary.totalWage}\n`
-  txt += divider + '\n'
+  lines.push('')
+  lines.push('——')
+  lines.push(`共 ${summary.count} 条记录`)
+  lines.push(`总工时：${summary.totalDuration} 小时`)
+  lines.push(`总工资：A$${summary.totalWage}`)
 
-  return txt
+  return `${lines.join('\n')}\n`
 }
 
 module.exports = {
   summarizeRecords,
+  formatDateRange,
   formatExportCSV,
   formatExportTXT,
 }

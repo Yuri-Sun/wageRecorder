@@ -95,7 +95,7 @@
           <view class="settings-cell__icon settings-cell__icon--blue">文</view>
           <view class="ui-cell__body">
             <text class="ui-cell__title">导出文本</text>
-            <text class="ui-cell__desc">TXT，便于阅读与分享</text>
+            <text class="ui-cell__desc">适合微信聊天阅读与转发</text>
           </view>
           <text class="ui-cell__chevron">›</text>
         </view>
