@@ -76,3 +76,10 @@ page {
   color: #666666;
   white-space: nowrap;
 }
+
+.index-version {
+  text-align: center;
+  padding: 24rpx 0 16rpx;
+  font-size: 24rpx;
+  color: #b2b2b2;
+}
